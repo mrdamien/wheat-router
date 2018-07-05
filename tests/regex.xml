@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router>
+    <path pattern="team">
+        <path name="name" pattern="(.+)">
+            <render file="{0}.php" />
+        </path>
+        <render file="roster.php" />
+    </path>
+</router>

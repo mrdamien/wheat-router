@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Notes:
+    
+    http://user:password@example.com:8080/some/dir?query=true#fragment
+    Variable:      Example
+    {scheme}       http
+    {user}         "user"
+    {pass}         "password"
+    {host}         example.com
+    {port}         8080
+    {path}         /some/dir
+    {query}        query=true
+    {query_}       ?query=true
+    {fragment}     fragment
+    {fragment_str} #fragment
+    Any variables not sent are empty strings.
+
+    $_GET variables can be accessed by putting an underscore first
+    {_id} -> $_GET['id']
+
+    Segment variables can be accessed with their name:
+    <path name="id" pattern="\d+">     {id}
+    <path name="title" pattern="\w+">  {title}
+
+    Understood literals:
+    value="true"
+    value="false"
+    value="null"
+
+    If value is something else, they will be compared as strings.
+
+    All <call> elements are executed on every <path> to the destination.
+
+    Example:
+    <path name="com">
+        <call>hello</call>
+        <path pattern="fruit" name="fruit">
+            <call>foo</call>
+            <path pattern="apple" name="apple">
+                <call>bar</call>
+            </path>
+        </path>
+        <path pattern="about" name="about">
+            <call>world</call>
+        </path>
+    </path>
+
+    If we pattern /fruit/apple router will call (in order):
+    - hello
+    - foo
+    - bar
+    But not 'world' since it isn't visited on the way to com.fruit.apple
+
+    If a <http> or <render> is executed, processing will stop at the end of that element.
+
+    Example:
+    <path name="com">
+        <path pattern="fruit" name="fruit">
+            <render file="fruit.xsl" />
+            <path pattern="apple" name="apple">
+                <render file="apple.xsl" />
+            </path>
+        </path>
+    </path>
+    /fruit will show 'fruit.xsl' since it does not match apple, processing does not
+    step into that <path> element.
+    /fruit/apple will show 'apple.xsl', not 'fruit.xsl' since the path DOES match that
+    <path> element, and processing continues inside. apple.xsl is the last called render.
+
+    Regex values can be referenced with an integer indicating the nth captured value:
+    <test subject="HTTP_REFERER" pattern="http://(\w+).com/(.*)">
+    {0} -> value of (\w+)
+    {1} -> value of (.*)
+
+    <http> is useful for sending HTTP codes directly.
+-->
+<router>
+    <path pattern="a">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="b">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="c">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="d">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="e">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="f">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="g">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="h">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="i">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="j">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="k">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="l">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="m">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="n">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="o">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="p">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="q">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="r">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="s">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="t">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="u">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="v">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="w">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="x">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="y">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="z">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="aa">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ab">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ac">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ad">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ae">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="af">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ag">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ah">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ai">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="aj">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ak">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="al">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="am">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="an">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ao">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ap">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="aq">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ar">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="as">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="at">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="au">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="av">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="aw">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ax">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ay">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="az">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ba">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bb">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bc">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bd">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="be">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bf">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bg">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bh">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bi">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bj">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bk">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bl">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bm">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bn">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bo">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bp">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bq">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="br">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bs">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bt">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bu">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bv">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bw">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bx">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="by">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="bz">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ca">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cb">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cc">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cd">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ce">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cf">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cg">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ch">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ci">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cj">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ck">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cl">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cm">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cn">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="co">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cp">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cq">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cr">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cs">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="ct">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cu">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="cv">
+        <path name="arg" pattern="(.*)" />
+    </path>
+    <path pattern="node">
+        <path name="id" pattern="(\d+)">
+        </path>
+        <path name="title" pattern="(\w+)">
+        </path>
+    </path>
+</router>

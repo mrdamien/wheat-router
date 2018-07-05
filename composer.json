@@ -1,0 +1,44 @@
+{
+    "name": "wheat/router",
+    "description": "XML based router",
+    "type": "library",
+    "require": {
+        "lib-libxml" : ">=2",
+        "lib-pcre": "*",
+        "lib-xsl": ">=1"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.9.2",
+        "phpunit/phpunit": "^7.2",
+        "wheat/error": "dev-master"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Damien",
+            "email": "mrdamien.com@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Wheat\\":"src/"
+        },
+        "files": [
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wheat\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": ["phpunit  --coverage-html coverage --whitelist src tests"],
+        "phpstan": "vendor/bin/phpstan analyse -l 1 -c phpstan.neon tests"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "/home/damien/code/error"
+        }
+    ]
+}

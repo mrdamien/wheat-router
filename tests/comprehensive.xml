@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router>
+    <block name="disallowHotlink">
+        <test subject="{HTTP_REFERER}" pattern="@^https?://hot-linker.com@">
+            <http code="404" />
+        </test>
+    </block>
+
+    <block name="checkRateLimit">
+        <switch>
+            <value><call with="1, 2">strcmp</call></value>
+            <case value="0">
+                <http code="429" />
+            </case>
+        </switch>
+    </block>
+
+    <block name="checkAuth">
+        <switch>
+            <value>1</value>
+            <case value="0">
+            </case>
+            <case value="1">
+                <http code="401" />
+            </case>
+        </switch>
+    </block>
+
+    <test subject="{host}" pattern="/^example.com/">
+        <ref name="disallowHotlink" />
+        <path>
+            <path name="page" pattern="/(.+)/">
+
+                <path name="id" pattern="/(\d+)/">
+                    <http code="200" />
+                    <render file="page/{0}.html" />
+                </path>
+                <http code="404" />
+            </path>
+        </path>
+    </test>
+
+    <test subject="{host}" pattern="/old-domain.com/">
+        <http code="302" location="https://example.com" />
+    </test>
+
+    <test subject="{host}" pattern="/redirect-please.com/">
+        <http code="302" location="{scheme}://{host}{path}{query_str}{fragment_str}" />
+    </test>
+
+    <test subject="{host}" pattern="/api.example.com/">
+        <ref name="disallowHotlink" />
+
+        <switch>
+            <value>{HTTP_X_API_VERSION}</value>
+            <case value="1">
+                <call with="X-API-Message: Please upgrade your client to V2">strlen</call>
+                <http code="301" />
+                <render file="upgrade.php" />
+            </case>
+            <case value="2">
+                <ref name="checkRateLimit" />
+
+                <path name="book" pattern="book">
+                    <path name="id" pattern="\d+">
+                        <test subject="{REQUEST_METHOD}" pattern="GET|HEAD|OPTIONS">
+                            <render file="book.php" />
+                        </test>
+                        <test subject="{REQUEST_METHOD}" pattern="POST|PUT|PATCH|DELETE">
+                            <ref name="checkAuth" />
+                            <render file="book.php" />
+                        </test>
+                    </path>
+                </path>
+            </case>
+        </switch>
+
+    </test>
+
+</router>
