@@ -211,7 +211,9 @@ class Parser
                     if (!isset($this->namedBlocks[$fnName])) {
                         throw new \Exception("Found a <ref> with not matching <block>: " . $fnName);
                     }
-                    array_push($ret, ...$this->namedBlocks[$fnName]);
+                    if (count($this->namedBlocks[$fnName])) {
+                        array_push($ret, ...$this->namedBlocks[$fnName]);
+                    }
                     break;
                 
                 case 'http':
