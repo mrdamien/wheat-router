@@ -26,18 +26,18 @@ declare (strict_types = 1);
 
 namespace Wheat\Router;
 
-class Config {
+interface RouterInterface
+{
+    /**
+     * @param string $uri
+     * @return array
+     */
+    public function route (string $uri): array;
 
-    /** @var string[] $settings  */
-    public $settings;
-
-    public function __construct (array $settings = [])
-    {
-        $this->settings = [
-            'configFile' => $settings['configFile'] ?? 'router.xml',
-            'cacheFile' => $settings['cacheFile'] ?? 'wheat.router.cache.php',
-            'regenCache' => $settings['regenCache'] ?? null,
-            'renderCommand' => $settings['renderCommand'] ?? 'Wheat\Router::render',
-        ];
-    }
+    /**
+     * @param string $id
+     * @param array $data
+     * @return void
+     */
+    public function generate (string $id, array $data = []);
 }

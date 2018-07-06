@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns:xi="http://www.w3.org/2001/XInclude">
+    <path pattern="blog">
+        <xi:include href="blog.xml" />
+    </path>
+    <path pattern="forum">
+        <xi:include href="forum.xml" />
+    </path>
+</router>

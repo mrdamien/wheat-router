@@ -4,14 +4,7 @@
     datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
 
     <start>
-        <element name="router">
-            <interleave>
-                <ref name="anyElement" />
-                <zeroOrMore>
-                    <ref name="block" />
-                </zeroOrMore>
-            </interleave>
-        </element>
+        <ref name="router" />
     </start>
 
     <define name="anyElement">
@@ -38,7 +31,21 @@
             <zeroOrMore>
                 <ref name="ref" />
             </zeroOrMore>
+            <zeroOrMore>
+                <ref name="router" />
+            </zeroOrMore>
         </interleave>
+    </define>
+
+    <define name="router">
+        <element name="router">
+            <interleave>
+                <ref name="anyElement" />
+                <zeroOrMore>
+                    <ref name="block" />
+                </zeroOrMore>
+            </interleave>
+        </element>
     </define>
 
     <define name="ref">

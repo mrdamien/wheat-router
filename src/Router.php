@@ -32,61 +32,50 @@ class Router
 {
     private $router;
 
+    /** @var string[] $settings  */
+    public $settings;
+
     /**
-     * @param Config $c
+     * @param string[] $c
      */
-    public function __construct (Config $c)
+    static public function make (array $settings)
     {
-        $this->config = $c;
+        $settings = [
+            'configFile' => $settings['configFile'] ?? 'router.xml',
+            'cacheFile' => $settings['cacheFile'] ?? 'wheat.router.cache.php',
+            'regenCache' => $settings['regenCache'] ?? null,
+            'renderCommand' => $settings['renderCommand'] ?? 'Wheat\Router::render',
+        ];
+
         if (
-            $this->config->settings['regenCache'] === true ||
-            !\file_exists($this->config->settings['cacheFile']) ||
+            $settings['regenCache'] === true ||
+            !\file_exists($settings['cacheFile']) ||
             (
-                $this->config->settings['regenCache'] !== false &&
-                filemtime($this->config->settings['cacheFile']) <= filemtime($this->config->settings['configFile'])
+                $settings['regenCache'] !== false &&
+                filemtime($settings['cacheFile']) <= filemtime($settings['configFile'])
             )
         ) {
-            $this->generateCode();
+            self::generateCode($settings);
         }
-        $this->router = require $this->config->settings['cacheFile'];
+        return require $settings['cacheFile'];
     }
 
-    /**
-     * @param string $uri
-     * @return array
-     */
-    public function route (string $uri): array
-    {
-        $code = $this->router->__invoke($uri);
-
-        return [
-            'httpCode' => $code,
-            'location' => $this->router->location,
-            'render' => $this->router->render,
-        ];
-    }
-
-    /**
-     * @param string $id
-     * @param array $data
-     * @return void
-     */
-    public function generate (string $id, array $data = [])
-    {
-        return $this->router->generate($id, $data);
-    }
-
-    private function generateCode ()
+    static private function generateCode (array $settings)
     {
         $reader = new \DOMDocument();
+        $reader->preserveWhiteSpace = false;
+        $reader->formatOutput = true;
 
-        if (!file_exists($this->config->settings['configFile'])) {
+        if (!file_exists($settings['configFile'])) {
             throw new \Exception("Cannot find configFile");
         }
 
-        if (!@$reader->load($this->config->settings['configFile'])) {
-            throw new \Exception("Config XML is not valid.");
+        if (!@$reader->load($settings['configFile'])) {
+            throw new \Exception("Config XML is not valid. ".$settings['configFile']);
         }
+
+        $reader->xinclude();
+
         
         \libxml_clear_errors();
         $prev = libxml_use_internal_errors(true);
@@ -101,6 +90,7 @@ class Router
 
         if (!$reader->relaxNGValidate(__DIR__.'/Router/schema.xml')) {
             $errors = $restore();
+            
             $errors = array_reduce($errors, function($carry, $item){
                 return $carry . "\n" . sprintf(
                     "%s[%d,%d] %s - Level: %d, Code: ",
@@ -117,6 +107,6 @@ class Router
         $restore();
 
         $configParser = new \Wheat\Router\Parser($reader);
-        $configParser->outputCode($this->config->settings['cacheFile']);
+        $configParser->outputCode($settings['cacheFile']);
     }
 }

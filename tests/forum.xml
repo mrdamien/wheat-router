@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns:xi="http://www.w3.org/2001/XInclude">
+    
+    <path pattern="\d+" id="forum.id">
+        
+    </path>
+    <path pattern="thread">
+        <path pattern="\d+" id="thread.id">
+            
+        </path>
+    </path>
+</router>

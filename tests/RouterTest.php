@@ -62,12 +62,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
      */
     public function testRouter ($path, $expect)
     {
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __DIR__ . '/basic.xml',
             'cacheFile' => __DIR__.'/basic.php',
-            'regenCache' => true
+            'regenCache' => true,
         ]);
-        $router = new \Wheat\Router($cfg);
 
         $route = $router->route($path);
         $this->assertEquals(
@@ -133,12 +132,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
      */
     public function testRegexRouter ($path, $expect)
     {
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __DIR__ . '/regex.xml',
             'cacheFile' => __DIR__.'/regex.php',
-            'regenCache' => true
+            'regenCache' => true,
         ]);
-        $router = new \Wheat\Router($cfg);
 
         $route = $router->route($path);
         $this->assertEquals(
@@ -212,12 +210,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     {
         $_SERVER['HTTP_X_API_VERSION'] = $apiVer;
         $_SERVER['REQUEST_METHOD'] = $method;
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __DIR__ . '/comprehensive.xml',
             'cacheFile' => __DIR__.'/comprehensive.php',
-            'regenCache' => true
+            'regenCache' => true,
         ]);
-        $router = new \Wheat\Router($cfg);
 
         $route = $router->route($path);
         $this->assertEquals(
@@ -230,6 +227,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         @unlink(__DIR__.'/basic.php');
         @unlink(__DIR__.'/regex.php');
         @unlink(__DIR__.'/comprehensive.php');
+        @unlink(__DIR__.'/include.php');
     }
 
     /**
@@ -237,12 +235,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
      */
     public function testInterpretations ()
     {
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __DIR__ . '/comprehensive.xml',
             'cacheFile' => __DIR__.'/comprehensive.php',
-            'regenCache' => true
+            'regenCache' => true,
         ]);
-        $router = new \Wheat\Router($cfg);
 
         $route = $router->route('https://redirect-please.com/path1/2?query=string#id');
         $this->assertEquals(
@@ -258,49 +255,77 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     public function testErrors1 ()
     {
         $this->expectException(\Exception::CLASS);
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __DIR__ . '/dne.xml',
             'cacheFile' => __DIR__.'/dne.php',
+            'regenCache' => true,
         ]);
-        $router = new \Wheat\Router($cfg);
     }
 
     public function testErrors2 ()
     {
         $this->expectException(\Exception::CLASS);
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __DIR__.'/invalid.xml',
             'cacheFile' => __DIR__.'/dne.php',
+            'regenCache' => true,
         ]);
-        $router = new \Wheat\Router($cfg);
     }
 
     public function testErrors3 ()
     {
         $this->expectException(\Exception::CLASS);
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __FILE__,
             'cacheFile' => __DIR__.'/dne.php',
+            'regenCache' => true,
         ]);
-        $router = new \Wheat\Router($cfg);
     }
 
     public function testErrors4 ()
     {
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __DIR__.'/basic.xml',
             'cacheFile' => __DIR__.'/basic.php',
-        ]);
-        $router = new \Wheat\Router($cfg);
+        ]);;
 
         touch(__DIR__.'/basic.xml', time()+5000);
         touch(__DIR__.'/basic.php', time()-5000);
 
-        $cfg = new \Wheat\Router\Config([
+        $router = \Wheat\Router::make([
             'configFile' => __DIR__.'/basic.xml',
             'cacheFile' => __DIR__.'/basic.php',
+            'regenCache' => true
         ]);
-        $router = new \Wheat\Router($cfg);
         $this->assertTrue(true);
+    }
+
+    public function testIncludes ()
+    {
+        $router = \Wheat\Router::make([
+            'configFile' => __DIR__.'/include.xml',
+            'cacheFile' => __DIR__.'/include.php',
+            'regenCache' => true,
+        ]);
+
+        $result = $router->route('/blog/post/1');
+        $this->assertEquals(
+            [
+                'httpCode' => 200,
+                'render' => false,
+                'location' => false
+            ],
+            $result
+        );
+
+        $result = $router->route('/nope');
+        $this->assertEquals(
+            [
+                'httpCode' => 404,
+                'render' => false,
+                'location' => false
+            ],
+            $result
+        );
     }
 }
