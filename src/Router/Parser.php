@@ -145,16 +145,6 @@ class Parser
         );
         $numSegments = $segments->getSize();
 
-        $backSegment = function() use (&$segmentIndex) {
-            $segmentIndex--;
-        };
-        $getSegment = function() use (&$segments, &$segmentIndex, $numSegments) {
-            if ($segmentIndex === $numSegments) {
-                return null;
-            }
-            return $segments[$segmentIndex++];
-        };
-
 
     }
 
@@ -208,6 +198,8 @@ class Parser
         $ifSwitch = [];
         $lastMatchesVar = '[]';
         $regexSwitch = [];
+
+        $getSegment = '$segment = ($segmentIndex === $numSegments) ? null : $segments[$segmentIndex++];';
 
         $interpretString = function (string $string, $me) use (&$lastMatchesVar)
         {
@@ -406,7 +398,7 @@ class Parser
         }
 
         if (count($ifSwitch) + count($regexSwitch)) {
-            $ret[] = '$segment = $getSegment();';
+            $ret[] = $getSegment;
             for ($i=0, $l=count($ifSwitch); $i<$l; $i++) {
                 $ret[] = $ifSwitch[$i];
                 if ($i < $l-1) {

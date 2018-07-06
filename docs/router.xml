@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Notes:
+    
+    http://user:password@example.com:8080/some/dir?query=true#fragment
+    Variable:      Example
+    {scheme}       http
+    {user}         "user"
+    {pass}         "password"
+    {host}         example.com
+    {port}         8080
+    {path}         /some/dir
+    {query}        query=true
+    {query_}       ?query=true
+    {fragment}     fragment
+    {fragment_str} #fragment
+    Any variables not sent are empty strings.
+
+    $_GET variables can be accessed by using its name
+    {id}
+
+    Segment variables can be accessed with their name:
+    <path name="id" pattern="\d+">     {id}
+    <path name="title" pattern="\w+">  {title}
+
+    Understood literals:
+    value="true"
+    value="false"
+    value="null"
+
+    If value is something else, they will be compared as strings.
+
+    All <call> elements are executed on every <path> to the destination.
+
+    Example:
+    <path name="com">
+        <call>hello</call>
+        <path pattern="fruit" name="fruit">
+            <call>foo</call>
+            <path pattern="apple" name="apple">
+                <call>bar</call>
+            </path>
+        </path>
+        <path pattern="about" name="about">
+            <call>world</call>
+        </path>
+    </path>
+
+    If we match /fruit/apple router will call (in order):
+    - hello
+    - foo
+    - bar
+    But not 'world' since it isn't visited on the way to com.fruit.apple
+
+    If a <http> or <render> is executed, processing will stop at the end of that block.
+    Processing will not step into child-blocks.
+
+    Example:
+    <path name="com">
+        <path pattern="fruit" name="fruit">
+            <render file="fruit.xsl" />
+            <path pattern="apple" name="apple">
+                <render file="apple.xsl" />
+            </path>
+        </path>
+    </path>
+    /fruit/apple will always show 'fruit.xsl'
+
+    Regex values can be referenced with an integer indicating the nth captured value:
+    <test subject="{HTTP_REFERER}" pattern="http://(\w+).com/(.*)">
+    {\0} -> value of (\w+)
+    {\1} -> value of (.*)
+
+    <http> is useful for sending HTTP codes directly. <return> is useful for 
+    handling routing in another way if no matching route is found.
+-->
+<router>
+    <block name="checkLogin">
+        <switch>
+            <value>
+                <call with="user current logged_in">UserService::isUserLoggedIn</call>
+            </value>
+            <case value="false">
+                <http code="302" route="cms.login" />
+            </case>
+        </switch>
+    </block>
+    <block name="disallowGet">
+        <test subject="{REQUEST_METHOD}" pattern="GET">
+            <http code="405" />
+        </test>
+    </block>
+    <test subject="{HTTP_REFERER}" pattern="http:\/\/badsite.com\/.*">
+        <http code="404" />
+        <render file="templates/error.xsl" />
+    </test>
+    <test subject="{HTTPS}" pattern="^$|off">
+        <http code="302" location="https://{host}{path}?{query}" />
+    </test>
+    <test subject="{HTTP_HOST}" pattern="(www.)?domain.com">
+        <call>Wheat\Session::install</call>
+        <path pattern="about">
+            <path pattern="luke">
+                <render file="templates/luke.xsl" />
+                <!-- /about/luke -->
+            </path>
+            <path pattern="cage">
+                <render file="templates/cage.xsl" />
+                <!-- /about/cage -->
+            </path>
+            <render file="templates/about.xsl" />
+            <!-- /about -->
+        </path>
+        <path pattern="node">
+            <path name="id" pattern="\d+">
+                <call with="cat wh:///node/{id} > wh:///tmp/fifo/page">husk_str</call>
+                <render file="templates/cage.xsl" />
+            </path>
+        </path>
+        <path>
+            <!-- empty <path>'s can be used for organization -->
+            <path name="cms.login" pattern="login">
+                <test subject="{REQUEST_METHOD}" pattern="POST">
+                    <call>Wheat\Cms::doLogin</call>
+                </test>
+                <call>Wheat\Cms::login</call>
+            </path>
+            <path name="cms.logout" pattern="logout">
+                <call>Wheat\Cms::logout</call>
+            </path>
+            <path name="cms.dashboard" pattern="">
+                <ref name="checkLogin" />
+                <call with="dashboard">AdminController::display</call>
+            </path>
+        </path>
+        <path pattern="api">
+            <ref name="disallowGet" />
+        </path>
+    </test>
+</router>
