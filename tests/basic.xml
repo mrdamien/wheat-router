@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <router>
     <path pattern="team">
-        <path name="name" pattern="john" id="john">
+        <path pattern="john" id="john">
             <render file="john.php" />
         </path>
-        <path name="name" pattern="jane">
+        <path pattern="jane">
             <render file="jane.php" />
         </path>
+        <path name="team_id" pattern="\d+" id="team.id">
+            <render file="{0}.php" />
+        </path>
         <render file="roster.php" />
+    </path>
+    <path pattern="lost">
+        <path name="name" pattern="(?&lt;id&gt;\d+)">
+            <http code="302" route="team.id" team_id="{id}" />
+        </path>
     </path>
 </router>

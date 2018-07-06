@@ -66,20 +66,9 @@ class Router
         $reader->preserveWhiteSpace = false;
         $reader->formatOutput = true;
 
-        if (!file_exists($settings['configFile'])) {
-            throw new \Exception("Cannot find configFile");
-        }
-
-        if (!@$reader->load($settings['configFile'])) {
-            throw new \Exception("Config XML is not valid. ".$settings['configFile']);
-        }
-
-        $reader->xinclude();
-
-        
         \libxml_clear_errors();
         $prev = libxml_use_internal_errors(true);
-        $error = set_error_handler(function(){});
+        $error = set_error_handler(function($err){return $err;});
         $restore = function() use ($prev) {
             $errors = libxml_get_errors();
             \libxml_clear_errors();
@@ -87,6 +76,16 @@ class Router
             restore_error_handler();
             return (array)$errors;
         };
+
+        if (!file_exists($settings['configFile'])) {
+            throw new \Exception("Cannot find configFile");
+        }
+
+        if (!@$reader->load($settings['configFile'])) {
+            throw new \Exception("Config XML is not valid. ".$settings['configFile'] . var_export($restore, true));
+        }
+
+        $reader->xinclude();
 
         if (!$reader->relaxNGValidate(__DIR__.'/Router/schema.xml')) {
             $errors = $restore();

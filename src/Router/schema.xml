@@ -130,6 +130,17 @@
             <attribute name="code">
                 <data type="integer" />
             </attribute>
+            <zeroOrMore>
+                <attribute>
+                    <anyName>
+                        <except>
+                            <name>code</name>
+                            <name>location</name>
+                            <name>route</name>
+                        </except>
+                    </anyName>
+                </attribute>
+            </zeroOrMore>
             <optional>
                 <choice>
                     <attribute name="location" />

@@ -49,6 +49,14 @@ class RouterTest extends \PHPUnit\Framework\TestCase
                     'location' => false,
                     'render' => false
                 ]
+            ],
+            [
+                'http://example.com/lost/1',
+                [
+                    'httpCode' => 302,
+                    'location' => '/team/1',
+                    'render' => false
+                ]
             ]
 
         ];
@@ -75,54 +83,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertEquals('/team/john', $router->generate('john'));
-    }
-
-    public function regexProvider ()
-    {
-        return [
-            [
-                '/team/john',
-                [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'john.php'
-                ]
-            ],
-            [
-                '/team/jane',
-                [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'jane.php'
-                ]
-                ],
-            [
-                'http://example.com/team/jane',
-                [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'jane.php'
-                ]
-            ],
-            [
-                'http://example.com/team',
-                [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'roster.php'
-                ]
-            ],
-            [
-                'http://example.com/foobar',
-                [
-                    'httpCode' => 404,
-                    'location' => false,
-                    'render' => false
-                ]
-            ]
-
-        ];
-
     }
     
     /**
