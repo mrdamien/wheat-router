@@ -36,7 +36,7 @@ class Config {
         $this->settings = [
             'configFile' => $settings['configFile'] ?? 'router.xml',
             'cacheFile' => $settings['cacheFile'] ?? 'wheat.router.cache.php',
-            'regenCache' => $settings['regenCache'] ?? false,
+            'regenCache' => $settings['regenCache'] ?? null,
             'renderCommand' => $settings['renderCommand'] ?? 'Wheat\Router::render',
         ];
     }

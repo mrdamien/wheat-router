@@ -27,20 +27,6 @@ declare (strict_types = 1);
 namespace Wheat;
 
 use Wheat\Router\Config;
-/*
-preg_match("@(?<route1>/about/banana)|(?<route0>/about/apple)|(?<route2>/about/(\d+))@","/about/3", $matches);
-print_r($matches); $end=microtime(true); printf("Time: %fms", 1000*($end-$s));
-Array
-(
-    [0] => /about/3
-    [route1] => 
-    [1] => 
-    [route0] => 
-    [2] => 
-    [route2] => /about/3
-    [3] => /about/3
-    [4] => 3
-)*/
 
 class Router
 {
@@ -52,14 +38,16 @@ class Router
     public function __construct (Config $c)
     {
         $this->config = $c;
-
         if (
-            $this->config->settings['regenCache'] || 
-            !\file_exists($this->config->settings['cacheFile'])
+            $this->config->settings['regenCache'] === true ||
+            !\file_exists($this->config->settings['cacheFile']) ||
+            (
+                $this->config->settings['regenCache'] !== false &&
+                filemtime($this->config->settings['cacheFile']) <= filemtime($this->config->settings['configFile'])
+            )
         ) {
             $this->generateCode();
         }
-
         $this->router = require $this->config->settings['cacheFile'];
     }
 
@@ -78,12 +66,26 @@ class Router
         ];
     }
 
+    /**
+     * @param string $id
+     * @param array $data
+     * @return void
+     */
+    public function generate (string $id, array $data = [])
+    {
+        return $this->router->generate($id, $data);
+    }
+
     private function generateCode ()
     {
         $reader = new \DOMDocument();
 
-        if (!$reader->load($this->config->settings['configFile'])) {
+        if (!file_exists($this->config->settings['configFile'])) {
             throw new \Exception("Cannot find configFile");
+        }
+
+        if (!@$reader->load($this->config->settings['configFile'])) {
+            throw new \Exception("Config XML is not valid.");
         }
         
         \libxml_clear_errors();

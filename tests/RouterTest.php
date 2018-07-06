@@ -74,6 +74,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             $expect,
             $route
         );
+
+        $this->assertEquals('/team/john', $router->generate('john'));
     }
 
     public function regexProvider ()
@@ -251,5 +253,54 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             ],
             $route
         );
+    }
+
+    public function testErrors1 ()
+    {
+        $this->expectException(\Exception::CLASS);
+        $cfg = new \Wheat\Router\Config([
+            'configFile' => __DIR__ . '/dne.xml',
+            'cacheFile' => __DIR__.'/dne.php',
+        ]);
+        $router = new \Wheat\Router($cfg);
+    }
+
+    public function testErrors2 ()
+    {
+        $this->expectException(\Exception::CLASS);
+        $cfg = new \Wheat\Router\Config([
+            'configFile' => __DIR__.'/invalid.xml',
+            'cacheFile' => __DIR__.'/dne.php',
+        ]);
+        $router = new \Wheat\Router($cfg);
+    }
+
+    public function testErrors3 ()
+    {
+        $this->expectException(\Exception::CLASS);
+        $cfg = new \Wheat\Router\Config([
+            'configFile' => __FILE__,
+            'cacheFile' => __DIR__.'/dne.php',
+        ]);
+        $router = new \Wheat\Router($cfg);
+    }
+
+    public function testErrors4 ()
+    {
+        $cfg = new \Wheat\Router\Config([
+            'configFile' => __DIR__.'/basic.xml',
+            'cacheFile' => __DIR__.'/basic.php',
+        ]);
+        $router = new \Wheat\Router($cfg);
+
+        touch(__DIR__.'/basic.xml', time()+5000);
+        touch(__DIR__.'/basic.php', time()-5000);
+
+        $cfg = new \Wheat\Router\Config([
+            'configFile' => __DIR__.'/basic.xml',
+            'cacheFile' => __DIR__.'/basic.php',
+        ]);
+        $router = new \Wheat\Router($cfg);
+        $this->assertTrue(true);
     }
 }

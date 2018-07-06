@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar
+    xmlns="http://relaxng.org/ns/structure/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+    <start>
+        <element name="router">
+            <interleave>
+                <ref name="anyElement" />
+                <zeroOrMore>
+                    <ref name="block" />
+                </zeroOrMore>
+            </interleave>
+        </element>
+    </start>
+
+    <define name="anyElement">
+        <interleave>
+            <text />
+            <zeroOrMore>
+                <ref name="path" />
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="switch" />
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="test" />
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="call" />
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="render" />
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="http" />
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="ref" />
+            </zeroOrMore>
+        </interleave>
+    </define>
+
+    <define name="ref">
+        <element name="ref">
+            <attribute name="name" />
+        </element>
+    </define>
+
+    <define name="block">
+        <element name="block">
+            <attribute name="name" />
+            <ref name="anyElement" />
+        </element>
+    </define>
+
+    <define name="path">
+        <element name="path">
+            <optional>
+                <attribute name="pattern" />
+            </optional>
+            <optional>
+                <attribute name="name" />
+            </optional>
+            <optional>
+                <attribute name="id" />
+            </optional>
+            <ref name="anyElement" />
+        </element>
+    </define>
+
+    <define name="call">
+        <element name="call">
+            <optional>
+                <attribute name="with" />
+            </optional>
+            <data type="string"></data>
+        </element>
+    </define>
+
+    <define name="switch">
+        <element name="switch">
+            <choice>
+                <element name="value">
+                    <data type="string"></data>
+                </element>
+                <element name="value">
+                    <ref name="call" />
+                </element>
+            </choice>
+            <oneOrMore>
+                <ref name="case" />
+            </oneOrMore>
+            <optional>
+                <ref name="default" />
+            </optional>
+        </element>
+    </define>
+
+    <define name="case">
+        <element name="case">
+            <attribute name="value" />
+            <ref name="anyElement" />
+        </element>
+    </define>
+
+    <define name="default">
+        <element name="default">
+            <ref name="anyElement" />
+        </element>
+    </define>
+
+    <define name="test">
+        <element name="test">
+            <attribute name="subject" />
+            <attribute name="pattern" />
+            <ref name="anyElement" />
+        </element>
+    </define>
+
+    <define name="http">
+        <element name="http">
+            <attribute name="code">
+                <data type="integer" />
+            </attribute>
+            <optional>
+                <choice>
+                    <attribute name="location" />
+                    <attribute name="route" />
+                </choice>
+            </optional>
+        </element>
+    </define>
+
+    <define name="render">
+        <element name="render">
+            <attribute name="file">
+                <data type="string"></data>
+            </attribute>
+        </element>
+    </define>
+
+</grammar>

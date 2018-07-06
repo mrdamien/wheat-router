@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <router>
     <path pattern="team">
-        <path name="name" pattern="john">
+        <path name="name" pattern="john" id="john">
             <render file="john.php" />
         </path>
         <path name="name" pattern="jane">

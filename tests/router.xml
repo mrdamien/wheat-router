@@ -76,6 +76,14 @@
     <http> is useful for sending HTTP codes directly.
 -->
 <router>
+    <path pattern="page">
+        <path name="name" pattern="(\w+)">
+            <path name="page_num" pattern="(\d+)" id="page.name">
+
+            </path>
+
+        </path>
+    </path>
     <path pattern="a">
         <path name="arg" pattern="(.*)" />
     </path>
@@ -376,7 +384,7 @@
     <path pattern="cv">
         <path name="arg" pattern="(.*)" />
     </path>
-    <path pattern="node">
+    <path pattern="node" name="node">
         <path name="id" pattern="(\d+)">
         </path>
         <path name="title" pattern="(\w+)">
