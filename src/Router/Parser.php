@@ -333,9 +333,6 @@ class Parser
                     break;
 
                 case 'path':
-                    $pattern = $child->attributes->getNamedItem('pattern')
-                        ? (string)$child->attributes->getNamedItem('pattern')->value
-                        : '';
                     $name = $child->attributes->getNamedItem('name')
                         ? (string)$child->attributes->getNamedItem('name')->value
                         : '';
@@ -343,8 +340,8 @@ class Parser
                         ? (string)$child->attributes->getNamedItem('id')->value
                         : '';
 
-
-                    if ($pattern) {
+                    if ( $child->attributes->getNamedItem('pattern')) {
+                        $pattern = (string)$child->attributes->getNamedItem('pattern')->value;
                         if ($this->isRegex($pattern)) {
                             $this->nameStack[] = $name;
                             $this->patternStack[] = '%s';
@@ -359,12 +356,8 @@ class Parser
 
                             $tmp = [];
                             $tmp[] = $if;
-                            $children = $this->controlParse($child);
-                            if (!$children) {
-                                $tmp[] = [$shouldQuit];
-                            } else {
-                                $tmp[] = $children;
-                            }
+                            $tmp[] = $this->controlParse($child);
+                            $tmp[] = [$shouldQuit];
                             $tmp[] = '}';
                             $regexSwitch[] = $tmp;
                             array_pop($this->matchesStack);
@@ -377,12 +370,8 @@ class Parser
 
                             $tmp = [];
                             $tmp[] = $if;
-                            $children = $this->controlParse($child);
-                            if (!$children) {
-                                $tmp[] = [$shouldQuit];
-                            } else {
-                                $tmp[] = $children;
-                            }
+                            $tmp[] = $this->controlParse($child);
+                            $tmp[] = [$shouldQuit];
                             $tmp[] = '}';
                             $ifSwitch[] = $tmp;
                         }
