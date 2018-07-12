@@ -115,9 +115,6 @@ class Parser
 
     private function invokeLogic (string $path = '/')
     {
-        $this->httpCode = 200;
-        $this->location = false;
-        $this->render = false;
         $this->url = parse_url($path);
 
         $segmentIndex = 0;
@@ -126,18 +123,6 @@ class Parser
         );
         $numSegments = $segments->getSize();
 
-
-    }
-
-    private function shouldQuit ($remaining)
-    {
-        if ($remaining === 0) {
-            return true;
-        }
-        if ($this->location || $this->render) {
-            return true;
-        }
-        return false;
     }
 
     public function generate ($id, array $data = [])
@@ -181,7 +166,6 @@ class Parser
         $regexSwitch = [];
 
         $getSegment = '$segment = ($segmentIndex === $numSegments) ? null : $segments[$segmentIndex++];';
-        $shouldQuit = 'if ($this->shouldQuit($numSegments-$segmentIndex)) {goto wheatRoutingFinished;}';
 
         $interpretString = function (string $string, $me) use (&$lastMatchesVar)
         {
@@ -216,35 +200,22 @@ class Parser
                     }
                     break;
                 
-                case 'http':
-                    $code = (string)$child->attributes->getNamedItem('code')->value;
-                    $route = $child->attributes->getNamedItem('route')
-                        ? (string)$child->attributes->getNamedItem('route')->value
-                        : '';
-                    $location = $child->attributes->getNamedItem('location')
-                        ? (string)$child->attributes->getNamedItem('location')->value
-                        : '';
-                    
-                
-                    $ret[] = '$this->httpCode = ' . $code . ';';
-                    if (!empty($location)) {
-                        $location = $interpretString($location, $this);
+                case 'return':
+                    $data = [];
+                    foreach ($child->attributes as $attr) {
+                        $name = (string)$attr->name;
+                        $value = $child->attributes->getNamedItem($name)->value;
+                        $data[$name] = sprintf(
+                            '%s => ' . $interpretString($value, $this),
+                            $this->phpWrite($name),
+                            $this->phpWrite($value)
+                        );
+                    }
+                    if (!isset($data['code'])) {
+                        $data['code'] = "'code' => '200'";
+                    }
+                    $ret[] = 'return [' . implode(',', $data) . '];';
 
-                        $ret[] = '$this->location = ' . $location . ';';
-                    }
-                    if (!empty($route)) {
-                        $args = [];
-                        foreach ($this->paths[$route]['order'] ?? [] as $arg) {
-                            $args[$arg] = $child->attributes->getNamedItem($arg)
-                            ? $this->phpWrite($arg).' => $this->variableOrString('
-                                . $this->phpWrite((string)$child->attributes->getNamedItem($arg)->value)
-                                . ', '.$lastMatchesVar.')'
-                            : '';
-                        }
-                        $ret[] = '$this->location = $this->generate(' 
-                            . $this->phpWrite($route) . ', [' . implode(',', $args) . ']'
-                        .');';
-                    }
                     break;
                 
                 case 'switch':
@@ -264,12 +235,6 @@ class Parser
                     $ret[] = ') {';
                     $ret[] = $this->controlParse($child);
                     $ret[] = '}';
-                    $ret[] = $shouldQuit;
-                    break;
-                
-                case 'render':
-                    $file = $child->attributes->getNamedItem('file')->value;
-                    $ret[] = '$this->render = ' . $interpretString($file, $this) . ';';
                     break;
 
                 case 'case':
@@ -328,7 +293,6 @@ class Parser
                     );
                     $ret[] = $this->controlParse($child);
                     $ret[] = '}';
-                    $ret[] = 'if ($this->shouldQuit($numSegments-$segmentIndex)) {goto wheatRoutingFinished;}';
                     array_pop($this->matchesStack);
                     break;
 
@@ -357,7 +321,6 @@ class Parser
                             $tmp = [];
                             $tmp[] = $if;
                             $tmp[] = $this->controlParse($child);
-                            $tmp[] = [$shouldQuit];
                             $tmp[] = '}';
                             $regexSwitch[] = $tmp;
                             array_pop($this->matchesStack);
@@ -371,7 +334,6 @@ class Parser
                             $tmp = [];
                             $tmp[] = $if;
                             $tmp[] = $this->controlParse($child);
-                            $tmp[] = [$shouldQuit];
                             $tmp[] = '}';
                             $ifSwitch[] = $tmp;
                         }
@@ -393,25 +355,26 @@ class Parser
             }
         }
 
+        $code = [];
+
         if (count($ifSwitch) + count($regexSwitch)) {
-            $ret[] = $getSegment;
+            $code[] = $getSegment;
             for ($i=0, $l=count($ifSwitch); $i<$l; $i++) {
-                // $ret[] = $ifSwitch[$i];
-                array_push($ret, ...$ifSwitch[$i]);
+                array_push($code, ...$ifSwitch[$i]);
                 if ($i < $l-1) {
-                    $ret[] = 'else';
+                    $code[] = 'else';
                 }
             }
             for ($i=0, $l=count($regexSwitch); $i<$l; $i++) {
-                array_push($ret, ...$regexSwitch[$i]);
-                // $ret[] = $regexSwitch[$i];
+                array_push($code, ...$regexSwitch[$i]);
             }
 
-            $ret[] = '$segmentIndex--;';
-            $ret[] = $shouldQuit;
+            $code[] = '$segmentIndex--;';
         }
 
-        return $ret;
+        if (count($ret)) {array_push($code, ...$ret);}
+
+        return $code;
     }
 
     private function isRegex (string $pattern)
@@ -454,15 +417,12 @@ class Parser
 
         fwrite($fp, "<?php /* Code automatically generated by Wheat\Router. Do not edit. */\n");
         fwrite($fp, "return new class implements \Wheat\Router\RouterInterface {\n");
-        fwrite($fp, "    public \$httpCode = 200;\n");
-        fwrite($fp, "    public \$location = false;\n");
-        fwrite($fp, "    public \$render   = false;\n");
         fwrite($fp, "    public \$url      = [];\n");
         fwrite($fp, "    public \$paths    = " . var_export($this->paths, true).";\n");
 
         $lines = file(__FILE__);
         $reflectionClass = new \ReflectionClass($this);
-        foreach (['variableOrString', 'shouldQuit', 'generate'] as $methodName) {
+        foreach (['variableOrString', 'generate'] as $methodName) {
             $method = $reflectionClass->getMethod($methodName);
             $start = $method->getStartLine();
             $end = $method->getEndLine();
@@ -496,12 +456,9 @@ class Parser
         $output($this->syntaxTree, 2);
 
 
-        fwrite($fp, "        \$this->httpCode = 404;\n");
         fwrite($fp, "        wheatRoutingFinished:\n");
         fwrite($fp, "        return [\n");
-        fwrite($fp, "            'httpCode' => \$this->httpCode,\n");
-        fwrite($fp, "            'location' => \$this->location,\n");
-        fwrite($fp, "            'render' => \$this->render,\n");
+        fwrite($fp, "            'code' => '404'\n");
         fwrite($fp, "        ];\n");
         fwrite($fp, "    }\n");
         fwrite($fp, "};");     

@@ -11,7 +11,7 @@
     {port}         8080
     {path}         /some/dir
     {query}        query=true
-    {query_}       ?query=true
+    {query_str}       ?query=true
     {fragment}     fragment
     {fragment_str} #fragment
     Any variables not sent are empty strings.
@@ -52,15 +52,12 @@
     - bar
     But not 'world' since it isn't visited on the way to com.fruit.apple
 
-    If a <http> or <render> is executed, processing will stop at the end of that block.
-    Processing will not step into child-blocks.
-
     Example:
     <path name="com">
         <path pattern="fruit" name="fruit">
-            <render file="fruit.xsl" />
+            <return file="fruit.xsl" />
             <path pattern="apple" name="apple">
-                <render file="apple.xsl" />
+                <return file="apple.xsl" />
             </path>
         </path>
     </path>
@@ -68,11 +65,8 @@
 
     Regex values can be referenced with an integer indicating the nth captured value:
     <test subject="{HTTP_REFERER}" pattern="http://(\w+).com/(.*)">
-    {\0} -> value of (\w+)
-    {\1} -> value of (.*)
-
-    <http> is useful for sending HTTP codes directly. <return> is useful for 
-    handling routing in another way if no matching route is found.
+    {0} -> value of (\w+)
+    {1} -> value of (.*)
 -->
 <router>
     <block name="checkLogin">
@@ -81,40 +75,40 @@
                 <call with="user current logged_in">UserService::isUserLoggedIn</call>
             </value>
             <case value="false">
-                <http code="302" route="cms.login" />
+                <return code="302" route="cms.login" />
             </case>
         </switch>
     </block>
     <block name="disallowGet">
         <test subject="{REQUEST_METHOD}" pattern="GET">
-            <http code="405" />
+            <return code="405" />
         </test>
     </block>
     <test subject="{HTTP_REFERER}" pattern="http:\/\/badsite.com\/.*">
-        <http code="404" />
-        <render file="templates/error.xsl" />
+        <return code="404" file="templates/error.xsl" />
     </test>
     <test subject="{HTTPS}" pattern="^$|off">
-        <http code="302" location="https://{host}{path}?{query}" />
+        <!-- If $_SERVER['HTTPS'] is empty or 'off' redirect to the HTTPS version -->
+        <return code="302" location="https://{host}{path}?{query_str}" />
     </test>
     <test subject="{HTTP_HOST}" pattern="(www.)?domain.com">
         <call>Wheat\Session::install</call>
         <path pattern="about">
             <path pattern="luke">
-                <render file="templates/luke.xsl" />
+                <return file="templates/luke.xsl" />
                 <!-- /about/luke -->
             </path>
             <path pattern="cage">
-                <render file="templates/cage.xsl" />
+                <return file="templates/cage.xsl" />
                 <!-- /about/cage -->
             </path>
-            <render file="templates/about.xsl" />
+            <return file="templates/about.xsl" />
             <!-- /about -->
         </path>
         <path pattern="node">
             <path name="id" pattern="\d+">
                 <call with="cat wh:///node/{id} > wh:///tmp/fifo/page">husk_str</call>
-                <render file="templates/cage.xsl" />
+                <return file="templates/cage.xsl" />
             </path>
         </path>
         <path>

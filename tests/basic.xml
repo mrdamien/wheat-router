@@ -2,19 +2,19 @@
 <router>
     <path pattern="team">
         <path pattern="john" id="john">
-            <render file="john.php" />
+            <return code="301" location="team/1"  />
         </path>
         <path pattern="jane">
-            <render file="jane.php" />
+            <return code="200" file="jane.php"  />
         </path>
         <path name="team_id" pattern="\d+" id="team.id">
-            <render file="{0}.php" />
+            <return file="{0}.php" />
         </path>
-        <render file="roster.php" />
+        <return code="200" location="roster.php"  />
     </path>
     <path pattern="lost">
         <path name="name" pattern="(?&lt;id&gt;\d+)">
-            <http code="302" route="team.id" team_id="{id}" />
+            <return code="302" location="/team/{id}"  />
         </path>
     </path>
 </router>

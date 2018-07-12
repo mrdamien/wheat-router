@@ -23,10 +23,7 @@
                 <ref name="call" />
             </zeroOrMore>
             <zeroOrMore>
-                <ref name="render" />
-            </zeroOrMore>
-            <zeroOrMore>
-                <ref name="http" />
+                <ref name="return" />
             </zeroOrMore>
             <zeroOrMore>
                 <ref name="ref" />
@@ -51,6 +48,7 @@
     <define name="ref">
         <element name="ref">
             <attribute name="name" />
+            <!-- <attribute name="value" /> -->
         </element>
     </define>
 
@@ -125,36 +123,13 @@
         </element>
     </define>
 
-    <define name="http">
-        <element name="http">
-            <attribute name="code">
-                <data type="integer" />
-            </attribute>
+    <define name="return">
+        <element name="return">
             <zeroOrMore>
                 <attribute>
-                    <anyName>
-                        <except>
-                            <name>code</name>
-                            <name>location</name>
-                            <name>route</name>
-                        </except>
-                    </anyName>
+                    <anyName />
                 </attribute>
             </zeroOrMore>
-            <optional>
-                <choice>
-                    <attribute name="location" />
-                    <attribute name="route" />
-                </choice>
-            </optional>
-        </element>
-    </define>
-
-    <define name="render">
-        <element name="render">
-            <attribute name="file">
-                <data type="string"></data>
-            </attribute>
         </element>
     </define>
 

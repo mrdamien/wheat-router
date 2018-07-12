@@ -2,7 +2,7 @@
 <router>
     <block name="disallowHotlink">
         <test subject="{HTTP_REFERER}" pattern="@^https?://hot-linker.com@">
-            <http code="404" />
+            <return code="404" />
         </test>
     </block>
 
@@ -10,7 +10,7 @@
         <switch>
             <value><call with="1, 2">strcmp</call></value>
             <case value="0">
-                <http code="429" />
+                <return code="429" />
             </case>
         </switch>
     </block>
@@ -21,7 +21,7 @@
             <case value="0">
             </case>
             <case value="1">
-                <http code="401" />
+                <return code="401" />
             </case>
         </switch>
     </block>
@@ -32,20 +32,19 @@
             <path name="page" pattern="/(.+)/">
 
                 <path name="id" pattern="/(\d+)/">
-                    <http code="200" />
-                    <render file="page/{0}.html" />
+                    <return file="page/{0}.html" />
                 </path>
-                <http code="404" />
+                <return code="404" />
             </path>
         </path>
     </test>
 
     <test subject="{host}" pattern="/old-domain.com/">
-        <http code="302" location="https://example.com" />
+        <return code="302" location="https://example.com" />
     </test>
 
     <test subject="{host}" pattern="/redirect-please.com/">
-        <http code="302" location="{scheme}://{host}{path}{query_str}{fragment_str}" />
+        <return code="302" scheme="{scheme}" path="{path}" query="{query}" fragment="{fragment}" location="{scheme}://{host}{path}{query_str}{fragment_str}" />
     </test>
 
     <test subject="{host}" pattern="/api.example.com/">
@@ -55,8 +54,7 @@
             <value>{HTTP_X_API_VERSION}</value>
             <case value="1">
                 <call with="X-API-Message: Please upgrade your client to V2">strlen</call>
-                <http code="301" />
-                <render file="upgrade.php" />
+                <return file="upgrade.php" code="301" />
             </case>
             <case value="2">
                 <ref name="checkRateLimit" />
@@ -64,11 +62,11 @@
                 <path name="book" pattern="book">
                     <path name="id" pattern="\d+">
                         <test subject="{REQUEST_METHOD}" pattern="GET|HEAD|OPTIONS">
-                            <render file="book.php" />
+                            <return file="book.php" />
                         </test>
                         <test subject="{REQUEST_METHOD}" pattern="POST|PUT|PATCH|DELETE">
                             <ref name="checkAuth" />
-                            <render file="book.php" />
+                            <return file="book.php" />
                         </test>
                     </path>
                 </path>

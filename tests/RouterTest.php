@@ -7,55 +7,56 @@ use Wheat\Router\Config;
 class RouterTest extends \PHPUnit\Framework\TestCase
 {
 
+
+    public static function tearDownAfterClass(){
+        @unlink(__DIR__.'/basic.php');
+        @unlink(__DIR__.'/regex.php');
+        @unlink(__DIR__.'/comprehensive.php');
+        @unlink(__DIR__.'/include.php');
+    }
+
     public function basicProvider ()
     {
         return [
             [
                 '/team/john',
                 [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'john.php'
+                    'code' => '301',
+                    'location' => 'team/1',
                 ]
             ],
             [
                 '/team/jane',
                 [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'jane.php'
+                    'code' => '200',
+                    'file' => 'jane.php'
                 ]
                 ],
             [
                 'http://example.com/team/jane',
                 [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'jane.php'
+                    'code' => '200',
+                    'file' => 'jane.php'
                 ]
             ],
             [
                 'http://example.com/team',
                 [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'roster.php'
+                    'code' => '200',
+                    'location' => 'roster.php'
                 ]
             ],
             [
                 'http://example.com/foobar',
                 [
-                    'httpCode' => 404,
-                    'location' => false,
-                    'render' => false
+                    'code' => '404'
                 ]
             ],
             [
                 'http://example.com/lost/1',
                 [
-                    'httpCode' => 302,
                     'location' => '/team/1',
-                    'render' => false
+                    'code' => '302',
                 ]
             ]
 
@@ -85,8 +86,44 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('/team/john', $router->generate('john'));
     }
     
+
+    public function regexProvider ()
+    {
+        return [
+            [
+                '/team/john',
+                [
+                    'code' => '200',
+                    'file' => 'john.php',
+                ]
+            ],
+            [
+                '/team/jane',
+                [
+                    'code' => '200',
+                    'file' => 'jane.php',
+                ]
+            ],
+            [
+                '/team/',
+                [
+                    'code' => '200',
+                    'file' => 'roster.php',
+                ]
+            ],
+            [
+                '/team',
+                [
+                    'code' => '200',
+                    'file' => 'roster.php',
+                ]
+            ],
+
+        ];
+
+    }
     /**
-     * @dataProvider basicProvider
+     * @dataProvider regexProvider
      *
      * @return void
      */
@@ -113,9 +150,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
                 2,
                 'https://example.com/book/1',
                 [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'page/1.html'
+                    'file' => 'page/1.html',
+                    'code' => '200',
                 ]
             ],
             [
@@ -123,9 +159,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
                 2,
                 'https://old-domain.com/book/1',
                 [
-                    'httpCode' => 302,
                     'location' => 'https://example.com',
-                    'render' => false
+                    'code' => '302',
                 ]
             ],
             [
@@ -133,9 +168,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
                 2,
                 'https://api.example.com/book/1',
                 [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => 'book.php'
+                    'file' => 'book.php',
+                    'code' => '200',
                 ]
             ],
             [
@@ -143,9 +177,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
                 2,
                 'https://api.example.com/book/1',
                 [
-                    'httpCode' => 200,
-                    'location' => false,
-                    'render' => false
+                    'code' => '401',
                 ]
             ],
             [
@@ -153,9 +185,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
                 1,
                 'https://api.example.com/book/1',
                 [
-                    'httpCode' => 301,
-                    'location' => false,
-                    'render' => 'upgrade.php'
+                    'file' => 'upgrade.php',
+                    'code' => '301',
                 ]
             ]
         ];
@@ -183,13 +214,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public static function tearDownAfterClass(){
-        @unlink(__DIR__.'/basic.php');
-        @unlink(__DIR__.'/regex.php');
-        @unlink(__DIR__.'/comprehensive.php');
-        @unlink(__DIR__.'/include.php');
-    }
-
     /**
      * @return void
      */
@@ -204,9 +228,12 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $route = $router->route('https://redirect-please.com/path1/2?query=string#id');
         $this->assertEquals(
             [
-                'httpCode' => 302,
+                'scheme'=>'https',
+                'path' => '/path1/2',
+                'fragment' => 'id',
+                'query' => 'query=string',
+                'code' => '302',
                 'location' => 'https://redirect-please.com/path1/2?query=string#id',
-                'render' => false
             ],
             $route
         );
@@ -271,9 +298,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $result = $router->route('/blog/post/1');
         $this->assertEquals(
             [
-                'httpCode' => 200,
-                'render' => false,
-                'location' => false
+                'code' => '200',
             ],
             $result
         );
@@ -281,9 +306,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $result = $router->route('/nope');
         $this->assertEquals(
             [
-                'httpCode' => 404,
-                'render' => false,
-                'location' => false
+                'code' => '404',
             ],
             $result
         );
