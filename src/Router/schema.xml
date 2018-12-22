@@ -36,6 +36,9 @@
 
     <define name="router">
         <element name="router">
+            <optional>
+                <attribute name="xml:base" />
+            </optional>
             <interleave>
                 <ref name="anyElement" />
                 <zeroOrMore>
