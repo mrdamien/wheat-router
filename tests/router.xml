@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <router>
+    <path pattern="first">
+        <return/>
+    </path>
     <path pattern="page">
         <path name="name" pattern="(\w+)">
             <path name="page_num" pattern="(\d+)" id="page.name">

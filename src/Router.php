@@ -30,6 +30,9 @@ use Wheat\Router\Config;
 
 class Router
 {
+
+    const XINCLUDENS = 'http://www.w3.org/2001/XInclude';
+
     private $router;
 
     /** @var string[] $settings  */
@@ -46,18 +49,37 @@ class Router
             'regenCache' => $settings['regenCache'] ?? null,
             'renderCommand' => $settings['renderCommand'] ?? 'Wheat\Router::render',
         ];
-
-        if (
-            $settings['regenCache'] === true ||
-            !\file_exists($settings['cacheFile']) ||
-            (
-                $settings['regenCache'] !== false &&
-                filemtime($settings['cacheFile']) <= filemtime($settings['configFile'])
-            )
-        ) {
+        
+        if (!\file_exists($settings['cacheFile'])) {
             self::generateCode($settings);
         }
-        return require $settings['cacheFile'];
+
+        $router = require $settings['cacheFile'];
+        if ($settings['regenCache'] || $router->needsRegeneration($settings['configFile'])) {
+            self::generateCode($settings);
+            $router = require $settings['cacheFile'];
+        }
+        return $router;
+    }
+
+    /**
+     * Gets a list of files that are included (via xinclude)
+     */
+    static private function getIncludes (string $root, \DOMDocument $xml): array
+    {
+        $includes = [];
+        $includeElements = $xml->getElementsByTagNameNS(self::XINCLUDENS, 'include');
+
+        foreach ($includeElements as $element) {
+            $include = $root.'/'.$element->attributes->getNamedItem('href')->nodeValue;
+            $includes[] = $include;
+            $doc = new \DOMDocument();
+            $doc->load($include);
+            $ret = self::getIncludes(dirname($include), $doc);
+            if (count($ret)) {array_push($includes, ...$ret);}
+        }
+
+        return $includes;
     }
 
     static private function generateCode (array $settings)
@@ -85,7 +107,11 @@ class Router
             throw new \Exception("Config XML is not valid. ".$settings['configFile'] . var_export($restore, true));
         }
 
+        $filePath = dirname($settings['configFile']);
+        $includes = self::getIncludes($filePath, $reader);
+        array_unshift($includes, $settings['configFile']);
         $reader->xinclude();
+
 
         if (!$reader->relaxNGValidate(__DIR__.'/Router/schema.xml')) {
             $errors = $restore();
@@ -105,7 +131,7 @@ class Router
         }
         $restore();
 
-        $configParser = new \Wheat\Router\Parser($reader);
+        $configParser = new \Wheat\Router\Parser($reader, $includes);
         $configParser->outputCode($settings['cacheFile']);
     }
 }

@@ -39,10 +39,12 @@ class Parser
     private $matchesStack = [];
     private $patternStack = [];
     private $nameStack = [];
+    private $includes;
 
-    public function __construct(\DOMNode $root)
+    public function __construct(\DOMNode $root, array $includes)
     {
         $this->root = $root;
+        $this->includes = $includes;
     }
 
     private static $id = 0;
@@ -50,6 +52,22 @@ class Parser
     {
         self::$id++;
         return sprintf('id_%04d', self::$id);
+    }
+
+    public function needsRegeneration (string $file): bool
+    {
+        if ($file !== $this->includes[0]) {
+            return true;
+        }
+        if (\filemtime($file) > $this->generationDate) {
+            return true;
+        }
+        foreach ($this->includes as $include) {
+            if (\filemtime($include) > $this->generationDate) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function variableOrString ($value, array ...$matches)
@@ -113,6 +131,7 @@ class Parser
         return $value;
     }
 
+    // called `route` in the final product
     private function invokeLogic (string $path = '/')
     {
         $this->url = parse_url($path);
@@ -419,10 +438,13 @@ class Parser
         fwrite($fp, "return new class implements \Wheat\Router\RouterInterface {\n");
         fwrite($fp, "    public \$url      = [];\n");
         fwrite($fp, "    public \$paths    = " . var_export($this->paths, true).";\n");
+        fwrite($fp, "    public \$includes    = " . var_export($this->includes, true).";\n");
+        fwrite($fp, "    public \$generationDate = " . \time().";\n");
+        
 
         $lines = file(__FILE__);
         $reflectionClass = new \ReflectionClass($this);
-        foreach (['variableOrString', 'generate'] as $methodName) {
+        foreach (['variableOrString', 'generate', 'needsRegeneration'] as $methodName) {
             $method = $reflectionClass->getMethod($methodName);
             $start = $method->getStartLine();
             $end = $method->getEndLine();
@@ -456,7 +478,6 @@ class Parser
         $output($this->syntaxTree, 2);
 
 
-        fwrite($fp, "        wheatRoutingFinished:\n");
         fwrite($fp, "        return [\n");
         fwrite($fp, "            'code' => '404'\n");
         fwrite($fp, "        ];\n");

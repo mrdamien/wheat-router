@@ -40,4 +40,11 @@ interface RouterInterface
      * @return void
      */
     public function generate (string $id, array $data = []);
+
+    /**
+     * true if the router needs to be regenerated.
+     * @param string $file
+     * @return bool
+     */
+    public function needsRegeneration (string $file): bool;
 }

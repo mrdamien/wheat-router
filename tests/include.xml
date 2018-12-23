@@ -6,4 +6,7 @@
     <path pattern="forum">
         <xi:include href="forum.xml" />
     </path>
+    <path pattern="other">
+        <xi:include href="subdirectory/other.xml" />
+    </path>
 </router>

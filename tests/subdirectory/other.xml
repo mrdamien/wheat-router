@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <router xmlns:xi="http://www.w3.org/2001/XInclude">
-    <path pattern="post">
-        <path pattern="\d+" id="post.id">
-            <return />
-        </path>
+
+    <path pattern="sub">
+        <xi:include href="subdirectory/other.xml" />
     </path>
+
 </router>
