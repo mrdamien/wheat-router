@@ -295,7 +295,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             'regenCache' => true,
         ]);
 
-        $result = $router->route('/blog/post/1');
+        $result = $router->route('/post/1');
         $this->assertEquals(
             [
                 'code' => '200',
