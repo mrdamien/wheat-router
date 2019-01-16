@@ -311,4 +311,28 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             $result
         );
     }
+
+    public function testConflict ()
+    {
+        $this->expectException(\Exception::class);
+
+        $router = \Wheat\Router::make([
+            'configFile' => __DIR__.'/conflict.xml',
+            'cacheFile' => __DIR__.'/include.php',
+            'regenCache' => true,
+        ]);
+
+    }
+
+    public function testNoConflict ()
+    {
+        $this->expectException(\Exception::class);
+
+        $router = \Wheat\Router::make([
+            'configFile' => __DIR__.'/no_conflict.xml',
+            'cacheFile' => __DIR__.'/include.php',
+            'regenCache' => true,
+        ]);
+
+    }
 }

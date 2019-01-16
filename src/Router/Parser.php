@@ -38,8 +38,14 @@ class Parser
     private $namedBlocks = [];
     private $matchesStack = [];
     private $patternStack = [];
+    private $patternHashMap = [];
     private $nameStack = [];
     private $includes;
+    private $syntaxTree;
+
+    // just to make phpstan be quiet.
+    private $url;
+    private $generationDate;
 
     public function __construct(\DOMNode $root, array $includes)
     {
@@ -238,7 +244,10 @@ class Parser
                     break;
                 
                 case 'switch':
+                    $empty = true;
+                    $value = null;
                     foreach ($child->childNodes as $node) {
+                        $empty = false;
                         if ($node->nodeName === "value") {
                             $value = $this->controlParse($node, true);
                             if ($value === []) {
@@ -249,11 +258,13 @@ class Parser
                             break;
                         }
                     }
-                    $ret[] = 'switch (';
-                    $ret[] = $value;
-                    $ret[] = ') {';
-                    $ret[] = $this->controlParse($child);
-                    $ret[] = '}';
+                    if (!$empty) {
+                        $ret[] = 'switch (';
+                        $ret[] = $value;
+                        $ret[] = ') {';
+                        $ret[] = $this->controlParse($child);
+                        $ret[] = '}';
+                    }
                     break;
 
                 case 'case':
@@ -363,8 +374,13 @@ class Parser
                                 'order' => $this->nameStack
                             ];
                         }
-    
-
+                        
+                        $pattern = implode('/', $this->patternStack);
+                        if (isset($this->patternHashMap[$pattern])) {
+                            throw new \Exception("Path $pattern seems to have a conflict.");
+                        }
+                        $this->patternHashMap[$pattern] = true;
+                        
                         array_pop($this->nameStack);
                         array_pop($this->patternStack);
                     } else {
