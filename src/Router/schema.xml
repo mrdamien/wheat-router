@@ -73,7 +73,9 @@
             <optional>
                 <attribute name="id" />
             </optional>
-            <ref name="anyElement" />
+            <optional>
+                <ref name="anyElement" />
+            </optional>
         </element>
     </define>
 
