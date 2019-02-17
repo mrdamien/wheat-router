@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns:xi="http://www.w3.org/2001/XInclude">
+    <block name="disallowHotlink">
+        <test subject="{HTTP_REFERER}" pattern="@^https?://hot-linker.com@">
+            <return code="404" />
+        </test>
+    </block>
+
+    <block name="requireLogin">
+        <switch>
+            <value><call>User::isLoggedIn</call></value>
+            <case value="false">
+                <return code="302" location="https://reddit.com/login?dest={CURRENT_URL_ENCODED}"  />
+            </case>
+            <case value="true">
+            </case>
+        </switch>
+    </block>
+
+    <test subject="{REQUEST_SCHEME}" pattern="/http$/">
+        <return code="302" location="https://reddit.com" />
+    </test>
+
+    <test subject="{PATH_INFO}" pattern="/\.rss$/">
+        <set format="rss" />
+    </test>
+    <test subject="{PATH_INFO}" pattern="/\.json$/">
+        <set format="json" />
+    </test>
+
+    <path pattern="" id="HomePage">
+        <return controller="ViewRedditHomepage" format="{format}" />
+    </path>
+
+    <path pattern="r">
+
+        <path pattern="{subreddit:[a-zA-Z][a-zA-Z0-9_]+}" id="SubReddit">
+            <parameter name="subreddit" type="string" />
+            <return subreddit="{subreddit}" controller="ViewSubreddit" sort="hot" format="{format}" />
+
+            <path pattern="comments{_:\.rss|\.json}">
+                <path pattern="{post_id:[a-z0-9]+}">
+                    <parameter name="post_id" type="string" />
+
+                    <path pattern="{title_string:[a-z0-9_]+}{_:\.rss|\.json}" id="SubRedditPost">
+                        <parameter name="title_string" type="string" function="prepare_title" />
+                        <return post_id="{post_id}" subreddit="{subreddit}" controller="ViewSubredditPost" format="{format}" />
+                    </path>
+                    <return post_id="{post_id}" subreddit="{subreddit}" controller="ViewSubredditPost" format="{format}" />
+                </path>
+            </path>
+
+            <path pattern="new{format:\.rss|\.json}">
+                <return subreddit="{subreddit}" controller="ViewSubreddit" sort="new" format="{format}" />
+            </path>
+
+            <path pattern="rising{format:\.rss|\.json}">
+                <return subreddit="{subreddit}" controller="ViewSubreddit" sort="rising" format="{format}" />
+            </path>
+
+            <path pattern="controversial{format:\.rss|\.json}">
+                <return subreddit="{subreddit}" controller="ViewSubreddit" sort="controversial" format="{format}" />
+            </path>
+
+            <path pattern="gilded{format:\.rss|\.json}">
+                <return subreddit="{subreddit}" controller="ViewSubreddit" sort="gilded" format="{format}" />
+            </path>
+
+            <path pattern="wiki{format:\.rss|\.json}">
+                <return subreddit="{subreddit}" controller="ViewSubredditWiki" format="{format}" />
+            </path>
+
+            <path pattern="submit{format:\.rss|\.json}">
+                <ref name="requireLogin" />
+                <return subreddit="{subreddit}" controller="SubmitToSubreddit" format="{format}" />
+            </path>
+
+        </path>
+
+    </path>
+
+
+
+    <path pattern="user">
+
+        <path pattern="{username:[a-z0-9A-Z_]+}" id="ViewUser">
+
+            <path pattern="comments" id="ViewUserComments">
+                <return username="{username}" controller="ViewUserComments" format="{format}" />
+            </path>
+            <path pattern="submitted" id="ViewUserSubmitted">
+                <return username="{username}" controller="ViewUserSubmitted" format="{format}" />
+            </path>
+            <path pattern="gilded" id="ViewUserGilded">
+                <return username="{username}" controller="ViewUserGilded" format="{format}" />
+            </path>
+            <path pattern="upvoted" id="ViewUserUpvoted">
+                <return username="{username}" controller="ViewUserUpvoted" format="{format}" />
+            </path>
+            <path pattern="downvoted" id="ViewUserDownvoted">
+                <return username="{username}" controller="ViewUserDownvoted" format="{format}" />
+            </path>
+            <path pattern="hidden" id="ViewUserHidden">
+                <return username="{username}" controller="ViewUserHidden" format="{format}" />
+            </path>
+            <path pattern="saved" id="ViewUserSaved">
+                <return username="{username}" controller="ViewUserSaved" format="{format}" />
+            </path>
+
+            <return username="{username}" controller="ViewUser" format="{format}" />
+        </path>
+
+    </path>
+
+    <path pattern="subreddits">
+        <return controller="SubredditsList" format="{format}" />
+    </path>
+
+    <path pattern="prefs">
+        <return controller="Preferences" format="{format}" />
+    </path>
+    
+    <path pattern="message">
+        <path pattern="inbox">
+            <return controller="MessageInbox" format="{format}" />
+        </path>
+        <path pattern="sent">
+            <return controller="MessageSentbox" format="{format}" />
+        </path>
+        <path pattern="compose">
+            <return controller="MessageCompose" format="{format}" />
+        </path>
+    </path>
+
+    <xi:include href="alphabet.xml" />
+    <xi:include href="alphabet_regex.xml" />
+    
+
+</router>

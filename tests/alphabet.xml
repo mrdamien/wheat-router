@@ -1,0 +1,2007 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns:xi="http://www.w3.org/2001/XInclude">
+
+
+    <path pattern="a">
+        <path pattern="a">
+            <return letters="aa" />
+        </path>
+        <path pattern="b">
+            <return letters="ab" />
+        </path>
+        <path pattern="c">
+            <return letters="ac" />
+        </path>
+        <path pattern="d">
+            <return letters="ad" />
+        </path>
+        <path pattern="e">
+            <return letters="ae" />
+        </path>
+        <path pattern="f">
+            <return letters="af" />
+        </path>
+        <path pattern="g">
+            <return letters="ag" />
+        </path>
+        <path pattern="h">
+            <return letters="ah" />
+        </path>
+        <path pattern="i">
+            <return letters="ai" />
+        </path>
+        <path pattern="j">
+            <return letters="aj" />
+        </path>
+        <path pattern="k">
+            <return letters="ak" />
+        </path>
+        <path pattern="l">
+            <return letters="al" />
+        </path>
+        <path pattern="m">
+            <return letters="am" />
+        </path>
+        <path pattern="n">
+            <return letters="an" />
+        </path>
+        <path pattern="o">
+            <return letters="ao" />
+        </path>
+        <path pattern="p">
+            <return letters="ap" />
+        </path>
+        <path pattern="q">
+            <return letters="aq" />
+        </path>
+        <path pattern="r">
+            <return letters="ar" />
+        </path>
+        <path pattern="s">
+            <return letters="as" />
+        </path>
+        <path pattern="t">
+            <return letters="at" />
+        </path>
+        <path pattern="u">
+            <return letters="au" />
+        </path>
+        <path pattern="v">
+            <return letters="av" />
+        </path>
+        <path pattern="w">
+            <return letters="aw" />
+        </path>
+        <path pattern="x">
+            <return letters="ax" />
+        </path>
+        <path pattern="y">
+            <return letters="ay" />
+        </path>
+        <path pattern="z">
+            <return letters="az" />
+        </path>
+    </path>
+    <path pattern="b">
+        <path pattern="a">
+            <return letters="ba" />
+        </path>
+        <path pattern="b">
+            <return letters="bb" />
+        </path>
+        <path pattern="c">
+            <return letters="bc" />
+        </path>
+        <path pattern="d">
+            <return letters="bd" />
+        </path>
+        <path pattern="e">
+            <return letters="be" />
+        </path>
+        <path pattern="f">
+            <return letters="bf" />
+        </path>
+        <path pattern="g">
+            <return letters="bg" />
+        </path>
+        <path pattern="h">
+            <return letters="bh" />
+        </path>
+        <path pattern="i">
+            <return letters="bi" />
+        </path>
+        <path pattern="j">
+            <return letters="bj" />
+        </path>
+        <path pattern="k">
+            <return letters="bk" />
+        </path>
+        <path pattern="l">
+            <return letters="bl" />
+        </path>
+        <path pattern="m">
+            <return letters="bm" />
+        </path>
+        <path pattern="n">
+            <return letters="bn" />
+        </path>
+        <path pattern="o">
+            <return letters="bo" />
+        </path>
+        <path pattern="p">
+            <return letters="bp" />
+        </path>
+        <path pattern="q">
+            <return letters="bq" />
+        </path>
+        <path pattern="r">
+            <return letters="br" />
+        </path>
+        <path pattern="s">
+            <return letters="bs" />
+        </path>
+        <path pattern="t">
+            <return letters="bt" />
+        </path>
+        <path pattern="u">
+            <return letters="bu" />
+        </path>
+        <path pattern="v">
+            <return letters="bv" />
+        </path>
+        <path pattern="w">
+            <return letters="bw" />
+        </path>
+        <path pattern="x">
+            <return letters="bx" />
+        </path>
+        <path pattern="y">
+            <return letters="by" />
+        </path>
+        <path pattern="z">
+            <return letters="bz" />
+        </path>
+    </path>
+    <path pattern="c">
+        <path pattern="a">
+            <return letters="ca" />
+        </path>
+        <path pattern="b">
+            <return letters="cb" />
+        </path>
+        <path pattern="c">
+            <return letters="cc" />
+        </path>
+        <path pattern="d">
+            <return letters="cd" />
+        </path>
+        <path pattern="e">
+            <return letters="ce" />
+        </path>
+        <path pattern="f">
+            <return letters="cf" />
+        </path>
+        <path pattern="g">
+            <return letters="cg" />
+        </path>
+        <path pattern="h">
+            <return letters="ch" />
+        </path>
+        <path pattern="i">
+            <return letters="ci" />
+        </path>
+        <path pattern="j">
+            <return letters="cj" />
+        </path>
+        <path pattern="k">
+            <return letters="ck" />
+        </path>
+        <path pattern="l">
+            <return letters="cl" />
+        </path>
+        <path pattern="m">
+            <return letters="cm" />
+        </path>
+        <path pattern="n">
+            <return letters="cn" />
+        </path>
+        <path pattern="o">
+            <return letters="co" />
+        </path>
+        <path pattern="p">
+            <return letters="cp" />
+        </path>
+        <path pattern="q">
+            <return letters="cq" />
+        </path>
+        <path pattern="r">
+            <return letters="cr" />
+        </path>
+        <path pattern="s">
+            <return letters="cs" />
+        </path>
+        <path pattern="t">
+            <return letters="ct" />
+        </path>
+        <path pattern="u">
+            <return letters="cu" />
+        </path>
+        <path pattern="v">
+            <return letters="cv" />
+        </path>
+        <path pattern="w">
+            <return letters="cw" />
+        </path>
+        <path pattern="x">
+            <return letters="cx" />
+        </path>
+        <path pattern="y">
+            <return letters="cy" />
+        </path>
+        <path pattern="z">
+            <return letters="cz" />
+        </path>
+    </path>
+    <path pattern="d">
+        <path pattern="a">
+            <return letters="da" />
+        </path>
+        <path pattern="b">
+            <return letters="db" />
+        </path>
+        <path pattern="c">
+            <return letters="dc" />
+        </path>
+        <path pattern="d">
+            <return letters="dd" />
+        </path>
+        <path pattern="e">
+            <return letters="de" />
+        </path>
+        <path pattern="f">
+            <return letters="df" />
+        </path>
+        <path pattern="g">
+            <return letters="dg" />
+        </path>
+        <path pattern="h">
+            <return letters="dh" />
+        </path>
+        <path pattern="i">
+            <return letters="di" />
+        </path>
+        <path pattern="j">
+            <return letters="dj" />
+        </path>
+        <path pattern="k">
+            <return letters="dk" />
+        </path>
+        <path pattern="l">
+            <return letters="dl" />
+        </path>
+        <path pattern="m">
+            <return letters="dm" />
+        </path>
+        <path pattern="n">
+            <return letters="dn" />
+        </path>
+        <path pattern="o">
+            <return letters="do" />
+        </path>
+        <path pattern="p">
+            <return letters="dp" />
+        </path>
+        <path pattern="q">
+            <return letters="dq" />
+        </path>
+        <path pattern="r">
+            <return letters="dr" />
+        </path>
+        <path pattern="s">
+            <return letters="ds" />
+        </path>
+        <path pattern="t">
+            <return letters="dt" />
+        </path>
+        <path pattern="u">
+            <return letters="du" />
+        </path>
+        <path pattern="v">
+            <return letters="dv" />
+        </path>
+        <path pattern="w">
+            <return letters="dw" />
+        </path>
+        <path pattern="x">
+            <return letters="dx" />
+        </path>
+        <path pattern="y">
+            <return letters="dy" />
+        </path>
+        <path pattern="z">
+            <return letters="dz" />
+        </path>
+    </path>
+    <path pattern="e">
+        <path pattern="a">
+            <return letters="ea" />
+        </path>
+        <path pattern="b">
+            <return letters="eb" />
+        </path>
+        <path pattern="c">
+            <return letters="ec" />
+        </path>
+        <path pattern="d">
+            <return letters="ed" />
+        </path>
+        <path pattern="e">
+            <return letters="ee" />
+        </path>
+        <path pattern="f">
+            <return letters="ef" />
+        </path>
+        <path pattern="g">
+            <return letters="eg" />
+        </path>
+        <path pattern="h">
+            <return letters="eh" />
+        </path>
+        <path pattern="i">
+            <return letters="ei" />
+        </path>
+        <path pattern="j">
+            <return letters="ej" />
+        </path>
+        <path pattern="k">
+            <return letters="ek" />
+        </path>
+        <path pattern="l">
+            <return letters="el" />
+        </path>
+        <path pattern="m">
+            <return letters="em" />
+        </path>
+        <path pattern="n">
+            <return letters="en" />
+        </path>
+        <path pattern="o">
+            <return letters="eo" />
+        </path>
+        <path pattern="p">
+            <return letters="ep" />
+        </path>
+        <path pattern="q">
+            <return letters="eq" />
+        </path>
+        <path pattern="r">
+            <return letters="er" />
+        </path>
+        <path pattern="s">
+            <return letters="es" />
+        </path>
+        <path pattern="t">
+            <return letters="et" />
+        </path>
+        <path pattern="u">
+            <return letters="eu" />
+        </path>
+        <path pattern="v">
+            <return letters="ev" />
+        </path>
+        <path pattern="w">
+            <return letters="ew" />
+        </path>
+        <path pattern="x">
+            <return letters="ex" />
+        </path>
+        <path pattern="y">
+            <return letters="ey" />
+        </path>
+        <path pattern="z">
+            <return letters="ez" />
+        </path>
+    </path>
+    <path pattern="f">
+        <path pattern="a">
+            <return letters="fa" />
+        </path>
+        <path pattern="b">
+            <return letters="fb" />
+        </path>
+        <path pattern="c">
+            <return letters="fc" />
+        </path>
+        <path pattern="d">
+            <return letters="fd" />
+        </path>
+        <path pattern="e">
+            <return letters="fe" />
+        </path>
+        <path pattern="f">
+            <return letters="ff" />
+        </path>
+        <path pattern="g">
+            <return letters="fg" />
+        </path>
+        <path pattern="h">
+            <return letters="fh" />
+        </path>
+        <path pattern="i">
+            <return letters="fi" />
+        </path>
+        <path pattern="j">
+            <return letters="fj" />
+        </path>
+        <path pattern="k">
+            <return letters="fk" />
+        </path>
+        <path pattern="l">
+            <return letters="fl" />
+        </path>
+        <path pattern="m">
+            <return letters="fm" />
+        </path>
+        <path pattern="n">
+            <return letters="fn" />
+        </path>
+        <path pattern="o">
+            <return letters="fo" />
+        </path>
+        <path pattern="p">
+            <return letters="fp" />
+        </path>
+        <path pattern="q">
+            <return letters="fq" />
+        </path>
+        <path pattern="r">
+            <return letters="fr" />
+        </path>
+        <path pattern="s">
+            <return letters="fs" />
+        </path>
+        <path pattern="t">
+            <return letters="ft" />
+        </path>
+        <path pattern="u">
+            <return letters="fu" />
+        </path>
+        <path pattern="v">
+            <return letters="fv" />
+        </path>
+        <path pattern="w">
+            <return letters="fw" />
+        </path>
+        <path pattern="x">
+            <return letters="fx" />
+        </path>
+        <path pattern="y">
+            <return letters="fy" />
+        </path>
+        <path pattern="z">
+            <return letters="fz" />
+        </path>
+    </path>
+    <path pattern="g">
+        <path pattern="a">
+            <return letters="ga" />
+        </path>
+        <path pattern="b">
+            <return letters="gb" />
+        </path>
+        <path pattern="c">
+            <return letters="gc" />
+        </path>
+        <path pattern="d">
+            <return letters="gd" />
+        </path>
+        <path pattern="e">
+            <return letters="ge" />
+        </path>
+        <path pattern="f">
+            <return letters="gf" />
+        </path>
+        <path pattern="g">
+            <return letters="gg" />
+        </path>
+        <path pattern="h">
+            <return letters="gh" />
+        </path>
+        <path pattern="i">
+            <return letters="gi" />
+        </path>
+        <path pattern="j">
+            <return letters="gj" />
+        </path>
+        <path pattern="k">
+            <return letters="gk" />
+        </path>
+        <path pattern="l">
+            <return letters="gl" />
+        </path>
+        <path pattern="m">
+            <return letters="gm" />
+        </path>
+        <path pattern="n">
+            <return letters="gn" />
+        </path>
+        <path pattern="o">
+            <return letters="go" />
+        </path>
+        <path pattern="p">
+            <return letters="gp" />
+        </path>
+        <path pattern="q">
+            <return letters="gq" />
+        </path>
+        <path pattern="r">
+            <return letters="gr" />
+        </path>
+        <path pattern="s">
+            <return letters="gs" />
+        </path>
+        <path pattern="t">
+            <return letters="gt" />
+        </path>
+        <path pattern="u">
+            <return letters="gu" />
+        </path>
+        <path pattern="v">
+            <return letters="gv" />
+        </path>
+        <path pattern="w">
+            <return letters="gw" />
+        </path>
+        <path pattern="x">
+            <return letters="gx" />
+        </path>
+        <path pattern="y">
+            <return letters="gy" />
+        </path>
+        <path pattern="z">
+            <return letters="gz" />
+        </path>
+    </path>
+    <path pattern="h">
+        <path pattern="a">
+            <return letters="ha" />
+        </path>
+        <path pattern="b">
+            <return letters="hb" />
+        </path>
+        <path pattern="c">
+            <return letters="hc" />
+        </path>
+        <path pattern="d">
+            <return letters="hd" />
+        </path>
+        <path pattern="e">
+            <return letters="he" />
+        </path>
+        <path pattern="f">
+            <return letters="hf" />
+        </path>
+        <path pattern="g">
+            <return letters="hg" />
+        </path>
+        <path pattern="h">
+            <return letters="hh" />
+        </path>
+        <path pattern="i">
+            <return letters="hi" />
+        </path>
+        <path pattern="j">
+            <return letters="hj" />
+        </path>
+        <path pattern="k">
+            <return letters="hk" />
+        </path>
+        <path pattern="l">
+            <return letters="hl" />
+        </path>
+        <path pattern="m">
+            <return letters="hm" />
+        </path>
+        <path pattern="n">
+            <return letters="hn" />
+        </path>
+        <path pattern="o">
+            <return letters="ho" />
+        </path>
+        <path pattern="p">
+            <return letters="hp" />
+        </path>
+        <path pattern="q">
+            <return letters="hq" />
+        </path>
+        <path pattern="r">
+            <return letters="hr" />
+        </path>
+        <path pattern="s">
+            <return letters="hs" />
+        </path>
+        <path pattern="t">
+            <return letters="ht" />
+        </path>
+        <path pattern="u">
+            <return letters="hu" />
+        </path>
+        <path pattern="v">
+            <return letters="hv" />
+        </path>
+        <path pattern="w">
+            <return letters="hw" />
+        </path>
+        <path pattern="x">
+            <return letters="hx" />
+        </path>
+        <path pattern="y">
+            <return letters="hy" />
+        </path>
+        <path pattern="z">
+            <return letters="hz" />
+        </path>
+    </path>
+    <path pattern="i">
+        <path pattern="a">
+            <return letters="ia" />
+        </path>
+        <path pattern="b">
+            <return letters="ib" />
+        </path>
+        <path pattern="c">
+            <return letters="ic" />
+        </path>
+        <path pattern="d">
+            <return letters="id" />
+        </path>
+        <path pattern="e">
+            <return letters="ie" />
+        </path>
+        <path pattern="f">
+            <return letters="if" />
+        </path>
+        <path pattern="g">
+            <return letters="ig" />
+        </path>
+        <path pattern="h">
+            <return letters="ih" />
+        </path>
+        <path pattern="i">
+            <return letters="ii" />
+        </path>
+        <path pattern="j">
+            <return letters="ij" />
+        </path>
+        <path pattern="k">
+            <return letters="ik" />
+        </path>
+        <path pattern="l">
+            <return letters="il" />
+        </path>
+        <path pattern="m">
+            <return letters="im" />
+        </path>
+        <path pattern="n">
+            <return letters="in" />
+        </path>
+        <path pattern="o">
+            <return letters="io" />
+        </path>
+        <path pattern="p">
+            <return letters="ip" />
+        </path>
+        <path pattern="q">
+            <return letters="iq" />
+        </path>
+        <path pattern="r">
+            <return letters="ir" />
+        </path>
+        <path pattern="s">
+            <return letters="is" />
+        </path>
+        <path pattern="t">
+            <return letters="it" />
+        </path>
+        <path pattern="u">
+            <return letters="iu" />
+        </path>
+        <path pattern="v">
+            <return letters="iv" />
+        </path>
+        <path pattern="w">
+            <return letters="iw" />
+        </path>
+        <path pattern="x">
+            <return letters="ix" />
+        </path>
+        <path pattern="y">
+            <return letters="iy" />
+        </path>
+        <path pattern="z">
+            <return letters="iz" />
+        </path>
+    </path>
+    <path pattern="j">
+        <path pattern="a">
+            <return letters="ja" />
+        </path>
+        <path pattern="b">
+            <return letters="jb" />
+        </path>
+        <path pattern="c">
+            <return letters="jc" />
+        </path>
+        <path pattern="d">
+            <return letters="jd" />
+        </path>
+        <path pattern="e">
+            <return letters="je" />
+        </path>
+        <path pattern="f">
+            <return letters="jf" />
+        </path>
+        <path pattern="g">
+            <return letters="jg" />
+        </path>
+        <path pattern="h">
+            <return letters="jh" />
+        </path>
+        <path pattern="i">
+            <return letters="ji" />
+        </path>
+        <path pattern="j">
+            <return letters="jj" />
+        </path>
+        <path pattern="k">
+            <return letters="jk" />
+        </path>
+        <path pattern="l">
+            <return letters="jl" />
+        </path>
+        <path pattern="m">
+            <return letters="jm" />
+        </path>
+        <path pattern="n">
+            <return letters="jn" />
+        </path>
+        <path pattern="o">
+            <return letters="jo" />
+        </path>
+        <path pattern="p">
+            <return letters="jp" />
+        </path>
+        <path pattern="q">
+            <return letters="jq" />
+        </path>
+        <path pattern="r">
+            <return letters="jr" />
+        </path>
+        <path pattern="s">
+            <return letters="js" />
+        </path>
+        <path pattern="t">
+            <return letters="jt" />
+        </path>
+        <path pattern="u">
+            <return letters="ju" />
+        </path>
+        <path pattern="v">
+            <return letters="jv" />
+        </path>
+        <path pattern="w">
+            <return letters="jw" />
+        </path>
+        <path pattern="x">
+            <return letters="jx" />
+        </path>
+        <path pattern="y">
+            <return letters="jy" />
+        </path>
+        <path pattern="z">
+            <return letters="jz" />
+        </path>
+    </path>
+    <path pattern="k">
+        <path pattern="a">
+            <return letters="ka" />
+        </path>
+        <path pattern="b">
+            <return letters="kb" />
+        </path>
+        <path pattern="c">
+            <return letters="kc" />
+        </path>
+        <path pattern="d">
+            <return letters="kd" />
+        </path>
+        <path pattern="e">
+            <return letters="ke" />
+        </path>
+        <path pattern="f">
+            <return letters="kf" />
+        </path>
+        <path pattern="g">
+            <return letters="kg" />
+        </path>
+        <path pattern="h">
+            <return letters="kh" />
+        </path>
+        <path pattern="i">
+            <return letters="ki" />
+        </path>
+        <path pattern="j">
+            <return letters="kj" />
+        </path>
+        <path pattern="k">
+            <return letters="kk" />
+        </path>
+        <path pattern="l">
+            <return letters="kl" />
+        </path>
+        <path pattern="m">
+            <return letters="km" />
+        </path>
+        <path pattern="n">
+            <return letters="kn" />
+        </path>
+        <path pattern="o">
+            <return letters="ko" />
+        </path>
+        <path pattern="p">
+            <return letters="kp" />
+        </path>
+        <path pattern="q">
+            <return letters="kq" />
+        </path>
+        <path pattern="r">
+            <return letters="kr" />
+        </path>
+        <path pattern="s">
+            <return letters="ks" />
+        </path>
+        <path pattern="t">
+            <return letters="kt" />
+        </path>
+        <path pattern="u">
+            <return letters="ku" />
+        </path>
+        <path pattern="v">
+            <return letters="kv" />
+        </path>
+        <path pattern="w">
+            <return letters="kw" />
+        </path>
+        <path pattern="x">
+            <return letters="kx" />
+        </path>
+        <path pattern="y">
+            <return letters="ky" />
+        </path>
+        <path pattern="z">
+            <return letters="kz" />
+        </path>
+    </path>
+    <path pattern="l">
+        <path pattern="a">
+            <return letters="la" />
+        </path>
+        <path pattern="b">
+            <return letters="lb" />
+        </path>
+        <path pattern="c">
+            <return letters="lc" />
+        </path>
+        <path pattern="d">
+            <return letters="ld" />
+        </path>
+        <path pattern="e">
+            <return letters="le" />
+        </path>
+        <path pattern="f">
+            <return letters="lf" />
+        </path>
+        <path pattern="g">
+            <return letters="lg" />
+        </path>
+        <path pattern="h">
+            <return letters="lh" />
+        </path>
+        <path pattern="i">
+            <return letters="li" />
+        </path>
+        <path pattern="j">
+            <return letters="lj" />
+        </path>
+        <path pattern="k">
+            <return letters="lk" />
+        </path>
+        <path pattern="l">
+            <return letters="ll" />
+        </path>
+        <path pattern="m">
+            <return letters="lm" />
+        </path>
+        <path pattern="n">
+            <return letters="ln" />
+        </path>
+        <path pattern="o">
+            <return letters="lo" />
+        </path>
+        <path pattern="p">
+            <return letters="lp" />
+        </path>
+        <path pattern="q">
+            <return letters="lq" />
+        </path>
+        <path pattern="r">
+            <return letters="lr" />
+        </path>
+        <path pattern="s">
+            <return letters="ls" />
+        </path>
+        <path pattern="t">
+            <return letters="lt" />
+        </path>
+        <path pattern="u">
+            <return letters="lu" />
+        </path>
+        <path pattern="v">
+            <return letters="lv" />
+        </path>
+        <path pattern="w">
+            <return letters="lw" />
+        </path>
+        <path pattern="x">
+            <return letters="lx" />
+        </path>
+        <path pattern="y">
+            <return letters="ly" />
+        </path>
+        <path pattern="z">
+            <return letters="lz" />
+        </path>
+    </path>
+    <path pattern="m">
+        <path pattern="a">
+            <return letters="ma" />
+        </path>
+        <path pattern="b">
+            <return letters="mb" />
+        </path>
+        <path pattern="c">
+            <return letters="mc" />
+        </path>
+        <path pattern="d">
+            <return letters="md" />
+        </path>
+        <path pattern="e">
+            <return letters="me" />
+        </path>
+        <path pattern="f">
+            <return letters="mf" />
+        </path>
+        <path pattern="g">
+            <return letters="mg" />
+        </path>
+        <path pattern="h">
+            <return letters="mh" />
+        </path>
+        <path pattern="i">
+            <return letters="mi" />
+        </path>
+        <path pattern="j">
+            <return letters="mj" />
+        </path>
+        <path pattern="k">
+            <return letters="mk" />
+        </path>
+        <path pattern="l">
+            <return letters="ml" />
+        </path>
+        <path pattern="m">
+            <return letters="mm" />
+        </path>
+        <path pattern="n">
+            <return letters="mn" />
+        </path>
+        <path pattern="o">
+            <return letters="mo" />
+        </path>
+        <path pattern="p">
+            <return letters="mp" />
+        </path>
+        <path pattern="q">
+            <return letters="mq" />
+        </path>
+        <path pattern="r">
+            <return letters="mr" />
+        </path>
+        <path pattern="s">
+            <return letters="ms" />
+        </path>
+        <path pattern="t">
+            <return letters="mt" />
+        </path>
+        <path pattern="u">
+            <return letters="mu" />
+        </path>
+        <path pattern="v">
+            <return letters="mv" />
+        </path>
+        <path pattern="w">
+            <return letters="mw" />
+        </path>
+        <path pattern="x">
+            <return letters="mx" />
+        </path>
+        <path pattern="y">
+            <return letters="my" />
+        </path>
+        <path pattern="z">
+            <return letters="mz" />
+        </path>
+    </path>
+    <path pattern="n">
+        <path pattern="a">
+            <return letters="na" />
+        </path>
+        <path pattern="b">
+            <return letters="nb" />
+        </path>
+        <path pattern="c">
+            <return letters="nc" />
+        </path>
+        <path pattern="d">
+            <return letters="nd" />
+        </path>
+        <path pattern="e">
+            <return letters="ne" />
+        </path>
+        <path pattern="f">
+            <return letters="nf" />
+        </path>
+        <path pattern="g">
+            <return letters="ng" />
+        </path>
+        <path pattern="h">
+            <return letters="nh" />
+        </path>
+        <path pattern="i">
+            <return letters="ni" />
+        </path>
+        <path pattern="j">
+            <return letters="nj" />
+        </path>
+        <path pattern="k">
+            <return letters="nk" />
+        </path>
+        <path pattern="l">
+            <return letters="nl" />
+        </path>
+        <path pattern="m">
+            <return letters="nm" />
+        </path>
+        <path pattern="n">
+            <return letters="nn" />
+        </path>
+        <path pattern="o">
+            <return letters="no" />
+        </path>
+        <path pattern="p">
+            <return letters="np" />
+        </path>
+        <path pattern="q">
+            <return letters="nq" />
+        </path>
+        <path pattern="r">
+            <return letters="nr" />
+        </path>
+        <path pattern="s">
+            <return letters="ns" />
+        </path>
+        <path pattern="t">
+            <return letters="nt" />
+        </path>
+        <path pattern="u">
+            <return letters="nu" />
+        </path>
+        <path pattern="v">
+            <return letters="nv" />
+        </path>
+        <path pattern="w">
+            <return letters="nw" />
+        </path>
+        <path pattern="x">
+            <return letters="nx" />
+        </path>
+        <path pattern="y">
+            <return letters="ny" />
+        </path>
+        <path pattern="z">
+            <return letters="nz" />
+        </path>
+    </path>
+    <path pattern="o">
+        <path pattern="a">
+            <return letters="oa" />
+        </path>
+        <path pattern="b">
+            <return letters="ob" />
+        </path>
+        <path pattern="c">
+            <return letters="oc" />
+        </path>
+        <path pattern="d">
+            <return letters="od" />
+        </path>
+        <path pattern="e">
+            <return letters="oe" />
+        </path>
+        <path pattern="f">
+            <return letters="of" />
+        </path>
+        <path pattern="g">
+            <return letters="og" />
+        </path>
+        <path pattern="h">
+            <return letters="oh" />
+        </path>
+        <path pattern="i">
+            <return letters="oi" />
+        </path>
+        <path pattern="j">
+            <return letters="oj" />
+        </path>
+        <path pattern="k">
+            <return letters="ok" />
+        </path>
+        <path pattern="l">
+            <return letters="ol" />
+        </path>
+        <path pattern="m">
+            <return letters="om" />
+        </path>
+        <path pattern="n">
+            <return letters="on" />
+        </path>
+        <path pattern="o">
+            <return letters="oo" />
+        </path>
+        <path pattern="p">
+            <return letters="op" />
+        </path>
+        <path pattern="q">
+            <return letters="oq" />
+        </path>
+        <path pattern="r">
+            <return letters="or" />
+        </path>
+        <path pattern="s">
+            <return letters="os" />
+        </path>
+        <path pattern="t">
+            <return letters="ot" />
+        </path>
+        <path pattern="u">
+            <return letters="ou" />
+        </path>
+        <path pattern="v">
+            <return letters="ov" />
+        </path>
+        <path pattern="w">
+            <return letters="ow" />
+        </path>
+        <path pattern="x">
+            <return letters="ox" />
+        </path>
+        <path pattern="y">
+            <return letters="oy" />
+        </path>
+        <path pattern="z">
+            <return letters="oz" />
+        </path>
+    </path>
+    <path pattern="p">
+        <path pattern="a">
+            <return letters="pa" />
+        </path>
+        <path pattern="b">
+            <return letters="pb" />
+        </path>
+        <path pattern="c">
+            <return letters="pc" />
+        </path>
+        <path pattern="d">
+            <return letters="pd" />
+        </path>
+        <path pattern="e">
+            <return letters="pe" />
+        </path>
+        <path pattern="f">
+            <return letters="pf" />
+        </path>
+        <path pattern="g">
+            <return letters="pg" />
+        </path>
+        <path pattern="h">
+            <return letters="ph" />
+        </path>
+        <path pattern="i">
+            <return letters="pi" />
+        </path>
+        <path pattern="j">
+            <return letters="pj" />
+        </path>
+        <path pattern="k">
+            <return letters="pk" />
+        </path>
+        <path pattern="l">
+            <return letters="pl" />
+        </path>
+        <path pattern="m">
+            <return letters="pm" />
+        </path>
+        <path pattern="n">
+            <return letters="pn" />
+        </path>
+        <path pattern="o">
+            <return letters="po" />
+        </path>
+        <path pattern="p">
+            <return letters="pp" />
+        </path>
+        <path pattern="q">
+            <return letters="pq" />
+        </path>
+        <path pattern="r">
+            <return letters="pr" />
+        </path>
+        <path pattern="s">
+            <return letters="ps" />
+        </path>
+        <path pattern="t">
+            <return letters="pt" />
+        </path>
+        <path pattern="u">
+            <return letters="pu" />
+        </path>
+        <path pattern="v">
+            <return letters="pv" />
+        </path>
+        <path pattern="w">
+            <return letters="pw" />
+        </path>
+        <path pattern="x">
+            <return letters="px" />
+        </path>
+        <path pattern="y">
+            <return letters="py" />
+        </path>
+        <path pattern="z">
+            <return letters="pz" />
+        </path>
+    </path>
+    <path pattern="q">
+        <path pattern="a">
+            <return letters="qa" />
+        </path>
+        <path pattern="b">
+            <return letters="qb" />
+        </path>
+        <path pattern="c">
+            <return letters="qc" />
+        </path>
+        <path pattern="d">
+            <return letters="qd" />
+        </path>
+        <path pattern="e">
+            <return letters="qe" />
+        </path>
+        <path pattern="f">
+            <return letters="qf" />
+        </path>
+        <path pattern="g">
+            <return letters="qg" />
+        </path>
+        <path pattern="h">
+            <return letters="qh" />
+        </path>
+        <path pattern="i">
+            <return letters="qi" />
+        </path>
+        <path pattern="j">
+            <return letters="qj" />
+        </path>
+        <path pattern="k">
+            <return letters="qk" />
+        </path>
+        <path pattern="l">
+            <return letters="ql" />
+        </path>
+        <path pattern="m">
+            <return letters="qm" />
+        </path>
+        <path pattern="n">
+            <return letters="qn" />
+        </path>
+        <path pattern="o">
+            <return letters="qo" />
+        </path>
+        <path pattern="p">
+            <return letters="qp" />
+        </path>
+        <path pattern="q">
+            <return letters="qq" />
+        </path>
+        <path pattern="r">
+            <return letters="qr" />
+        </path>
+        <path pattern="s">
+            <return letters="qs" />
+        </path>
+        <path pattern="t">
+            <return letters="qt" />
+        </path>
+        <path pattern="u">
+            <return letters="qu" />
+        </path>
+        <path pattern="v">
+            <return letters="qv" />
+        </path>
+        <path pattern="w">
+            <return letters="qw" />
+        </path>
+        <path pattern="x">
+            <return letters="qx" />
+        </path>
+        <path pattern="y">
+            <return letters="qy" />
+        </path>
+        <path pattern="z">
+            <return letters="qz" />
+        </path>
+    </path>
+    
+    <path pattern="s">
+        <path pattern="a">
+            <return letters="sa" />
+        </path>
+        <path pattern="b">
+            <return letters="sb" />
+        </path>
+        <path pattern="c">
+            <return letters="sc" />
+        </path>
+        <path pattern="d">
+            <return letters="sd" />
+        </path>
+        <path pattern="e">
+            <return letters="se" />
+        </path>
+        <path pattern="f">
+            <return letters="sf" />
+        </path>
+        <path pattern="g">
+            <return letters="sg" />
+        </path>
+        <path pattern="h">
+            <return letters="sh" />
+        </path>
+        <path pattern="i">
+            <return letters="si" />
+        </path>
+        <path pattern="j">
+            <return letters="sj" />
+        </path>
+        <path pattern="k">
+            <return letters="sk" />
+        </path>
+        <path pattern="l">
+            <return letters="sl" />
+        </path>
+        <path pattern="m">
+            <return letters="sm" />
+        </path>
+        <path pattern="n">
+            <return letters="sn" />
+        </path>
+        <path pattern="o">
+            <return letters="so" />
+        </path>
+        <path pattern="p">
+            <return letters="sp" />
+        </path>
+        <path pattern="q">
+            <return letters="sq" />
+        </path>
+        <path pattern="r">
+            <return letters="sr" />
+        </path>
+        <path pattern="s">
+            <return letters="ss" />
+        </path>
+        <path pattern="t">
+            <return letters="st" />
+        </path>
+        <path pattern="u">
+            <return letters="su" />
+        </path>
+        <path pattern="v">
+            <return letters="sv" />
+        </path>
+        <path pattern="w">
+            <return letters="sw" />
+        </path>
+        <path pattern="x">
+            <return letters="sx" />
+        </path>
+        <path pattern="y">
+            <return letters="sy" />
+        </path>
+        <path pattern="z">
+            <return letters="sz" />
+        </path>
+    </path>
+    <path pattern="t">
+        <path pattern="a">
+            <return letters="ta" />
+        </path>
+        <path pattern="b">
+            <return letters="tb" />
+        </path>
+        <path pattern="c">
+            <return letters="tc" />
+        </path>
+        <path pattern="d">
+            <return letters="td" />
+        </path>
+        <path pattern="e">
+            <return letters="te" />
+        </path>
+        <path pattern="f">
+            <return letters="tf" />
+        </path>
+        <path pattern="g">
+            <return letters="tg" />
+        </path>
+        <path pattern="h">
+            <return letters="th" />
+        </path>
+        <path pattern="i">
+            <return letters="ti" />
+        </path>
+        <path pattern="j">
+            <return letters="tj" />
+        </path>
+        <path pattern="k">
+            <return letters="tk" />
+        </path>
+        <path pattern="l">
+            <return letters="tl" />
+        </path>
+        <path pattern="m">
+            <return letters="tm" />
+        </path>
+        <path pattern="n">
+            <return letters="tn" />
+        </path>
+        <path pattern="o">
+            <return letters="to" />
+        </path>
+        <path pattern="p">
+            <return letters="tp" />
+        </path>
+        <path pattern="q">
+            <return letters="tq" />
+        </path>
+        <path pattern="r">
+            <return letters="tr" />
+        </path>
+        <path pattern="s">
+            <return letters="ts" />
+        </path>
+        <path pattern="t">
+            <return letters="tt" />
+        </path>
+        <path pattern="u">
+            <return letters="tu" />
+        </path>
+        <path pattern="v">
+            <return letters="tv" />
+        </path>
+        <path pattern="w">
+            <return letters="tw" />
+        </path>
+        <path pattern="x">
+            <return letters="tx" />
+        </path>
+        <path pattern="y">
+            <return letters="ty" />
+        </path>
+        <path pattern="z">
+            <return letters="tz" />
+        </path>
+    </path>
+    <path pattern="u">
+        <path pattern="a">
+            <return letters="ua" />
+        </path>
+        <path pattern="b">
+            <return letters="ub" />
+        </path>
+        <path pattern="c">
+            <return letters="uc" />
+        </path>
+        <path pattern="d">
+            <return letters="ud" />
+        </path>
+        <path pattern="e">
+            <return letters="ue" />
+        </path>
+        <path pattern="f">
+            <return letters="uf" />
+        </path>
+        <path pattern="g">
+            <return letters="ug" />
+        </path>
+        <path pattern="h">
+            <return letters="uh" />
+        </path>
+        <path pattern="i">
+            <return letters="ui" />
+        </path>
+        <path pattern="j">
+            <return letters="uj" />
+        </path>
+        <path pattern="k">
+            <return letters="uk" />
+        </path>
+        <path pattern="l">
+            <return letters="ul" />
+        </path>
+        <path pattern="m">
+            <return letters="um" />
+        </path>
+        <path pattern="n">
+            <return letters="un" />
+        </path>
+        <path pattern="o">
+            <return letters="uo" />
+        </path>
+        <path pattern="p">
+            <return letters="up" />
+        </path>
+        <path pattern="q">
+            <return letters="uq" />
+        </path>
+        <path pattern="r">
+            <return letters="ur" />
+        </path>
+        <path pattern="s">
+            <return letters="us" />
+        </path>
+        <path pattern="t">
+            <return letters="ut" />
+        </path>
+        <path pattern="u">
+            <return letters="uu" />
+        </path>
+        <path pattern="v">
+            <return letters="uv" />
+        </path>
+        <path pattern="w">
+            <return letters="uw" />
+        </path>
+        <path pattern="x">
+            <return letters="ux" />
+        </path>
+        <path pattern="y">
+            <return letters="uy" />
+        </path>
+        <path pattern="z">
+            <return letters="uz" />
+        </path>
+    </path>
+    <path pattern="v">
+        <path pattern="a">
+            <return letters="va" />
+        </path>
+        <path pattern="b">
+            <return letters="vb" />
+        </path>
+        <path pattern="c">
+            <return letters="vc" />
+        </path>
+        <path pattern="d">
+            <return letters="vd" />
+        </path>
+        <path pattern="e">
+            <return letters="ve" />
+        </path>
+        <path pattern="f">
+            <return letters="vf" />
+        </path>
+        <path pattern="g">
+            <return letters="vg" />
+        </path>
+        <path pattern="h">
+            <return letters="vh" />
+        </path>
+        <path pattern="i">
+            <return letters="vi" />
+        </path>
+        <path pattern="j">
+            <return letters="vj" />
+        </path>
+        <path pattern="k">
+            <return letters="vk" />
+        </path>
+        <path pattern="l">
+            <return letters="vl" />
+        </path>
+        <path pattern="m">
+            <return letters="vm" />
+        </path>
+        <path pattern="n">
+            <return letters="vn" />
+        </path>
+        <path pattern="o">
+            <return letters="vo" />
+        </path>
+        <path pattern="p">
+            <return letters="vp" />
+        </path>
+        <path pattern="q">
+            <return letters="vq" />
+        </path>
+        <path pattern="r">
+            <return letters="vr" />
+        </path>
+        <path pattern="s">
+            <return letters="vs" />
+        </path>
+        <path pattern="t">
+            <return letters="vt" />
+        </path>
+        <path pattern="u">
+            <return letters="vu" />
+        </path>
+        <path pattern="v">
+            <return letters="vv" />
+        </path>
+        <path pattern="w">
+            <return letters="vw" />
+        </path>
+        <path pattern="x">
+            <return letters="vx" />
+        </path>
+        <path pattern="y">
+            <return letters="vy" />
+        </path>
+        <path pattern="z">
+            <return letters="vz" />
+        </path>
+    </path>
+    <path pattern="w">
+        <path pattern="a">
+            <return letters="wa" />
+        </path>
+        <path pattern="b">
+            <return letters="wb" />
+        </path>
+        <path pattern="c">
+            <return letters="wc" />
+        </path>
+        <path pattern="d">
+            <return letters="wd" />
+        </path>
+        <path pattern="e">
+            <return letters="we" />
+        </path>
+        <path pattern="f">
+            <return letters="wf" />
+        </path>
+        <path pattern="g">
+            <return letters="wg" />
+        </path>
+        <path pattern="h">
+            <return letters="wh" />
+        </path>
+        <path pattern="i">
+            <return letters="wi" />
+        </path>
+        <path pattern="j">
+            <return letters="wj" />
+        </path>
+        <path pattern="k">
+            <return letters="wk" />
+        </path>
+        <path pattern="l">
+            <return letters="wl" />
+        </path>
+        <path pattern="m">
+            <return letters="wm" />
+        </path>
+        <path pattern="n">
+            <return letters="wn" />
+        </path>
+        <path pattern="o">
+            <return letters="wo" />
+        </path>
+        <path pattern="p">
+            <return letters="wp" />
+        </path>
+        <path pattern="q">
+            <return letters="wq" />
+        </path>
+        <path pattern="r">
+            <return letters="wr" />
+        </path>
+        <path pattern="s">
+            <return letters="ws" />
+        </path>
+        <path pattern="t">
+            <return letters="wt" />
+        </path>
+        <path pattern="u">
+            <return letters="wu" />
+        </path>
+        <path pattern="v">
+            <return letters="wv" />
+        </path>
+        <path pattern="w">
+            <return letters="ww" />
+        </path>
+        <path pattern="x">
+            <return letters="wx" />
+        </path>
+        <path pattern="y">
+            <return letters="wy" />
+        </path>
+        <path pattern="z">
+            <return letters="wz" />
+        </path>
+    </path>
+    <path pattern="x">
+        <path pattern="a">
+            <return letters="xa" />
+        </path>
+        <path pattern="b">
+            <return letters="xb" />
+        </path>
+        <path pattern="c">
+            <return letters="xc" />
+        </path>
+        <path pattern="d">
+            <return letters="xd" />
+        </path>
+        <path pattern="e">
+            <return letters="xe" />
+        </path>
+        <path pattern="f">
+            <return letters="xf" />
+        </path>
+        <path pattern="g">
+            <return letters="xg" />
+        </path>
+        <path pattern="h">
+            <return letters="xh" />
+        </path>
+        <path pattern="i">
+            <return letters="xi" />
+        </path>
+        <path pattern="j">
+            <return letters="xj" />
+        </path>
+        <path pattern="k">
+            <return letters="xk" />
+        </path>
+        <path pattern="l">
+            <return letters="xl" />
+        </path>
+        <path pattern="m">
+            <return letters="xm" />
+        </path>
+        <path pattern="n">
+            <return letters="xn" />
+        </path>
+        <path pattern="o">
+            <return letters="xo" />
+        </path>
+        <path pattern="p">
+            <return letters="xp" />
+        </path>
+        <path pattern="q">
+            <return letters="xq" />
+        </path>
+        <path pattern="r">
+            <return letters="xr" />
+        </path>
+        <path pattern="s">
+            <return letters="xs" />
+        </path>
+        <path pattern="t">
+            <return letters="xt" />
+        </path>
+        <path pattern="u">
+            <return letters="xu" />
+        </path>
+        <path pattern="v">
+            <return letters="xv" />
+        </path>
+        <path pattern="w">
+            <return letters="xw" />
+        </path>
+        <path pattern="x">
+            <return letters="xx" />
+        </path>
+        <path pattern="y">
+            <return letters="xy" />
+        </path>
+        <path pattern="z">
+            <return letters="xz" />
+        </path>
+    </path>
+    <path pattern="y">
+        <path pattern="a">
+            <return letters="ya" />
+        </path>
+        <path pattern="b">
+            <return letters="yb" />
+        </path>
+        <path pattern="c">
+            <return letters="yc" />
+        </path>
+        <path pattern="d">
+            <return letters="yd" />
+        </path>
+        <path pattern="e">
+            <return letters="ye" />
+        </path>
+        <path pattern="f">
+            <return letters="yf" />
+        </path>
+        <path pattern="g">
+            <return letters="yg" />
+        </path>
+        <path pattern="h">
+            <return letters="yh" />
+        </path>
+        <path pattern="i">
+            <return letters="yi" />
+        </path>
+        <path pattern="j">
+            <return letters="yj" />
+        </path>
+        <path pattern="k">
+            <return letters="yk" />
+        </path>
+        <path pattern="l">
+            <return letters="yl" />
+        </path>
+        <path pattern="m">
+            <return letters="ym" />
+        </path>
+        <path pattern="n">
+            <return letters="yn" />
+        </path>
+        <path pattern="o">
+            <return letters="yo" />
+        </path>
+        <path pattern="p">
+            <return letters="yp" />
+        </path>
+        <path pattern="q">
+            <return letters="yq" />
+        </path>
+        <path pattern="r">
+            <return letters="yr" />
+        </path>
+        <path pattern="s">
+            <return letters="ys" />
+        </path>
+        <path pattern="t">
+            <return letters="yt" />
+        </path>
+        <path pattern="u">
+            <return letters="yu" />
+        </path>
+        <path pattern="v">
+            <return letters="yv" />
+        </path>
+        <path pattern="w">
+            <return letters="yw" />
+        </path>
+        <path pattern="x">
+            <return letters="yx" />
+        </path>
+        <path pattern="y">
+            <return letters="yy" />
+        </path>
+        <path pattern="z">
+            <return letters="yz" />
+        </path>
+    </path>
+    <path pattern="z">
+        <path pattern="a">
+            <return letters="za" />
+        </path>
+        <path pattern="b">
+            <return letters="zb" />
+        </path>
+        <path pattern="c">
+            <return letters="zc" />
+        </path>
+        <path pattern="d">
+            <return letters="zd" />
+        </path>
+        <path pattern="e">
+            <return letters="ze" />
+        </path>
+        <path pattern="f">
+            <return letters="zf" />
+        </path>
+        <path pattern="g">
+            <return letters="zg" />
+        </path>
+        <path pattern="h">
+            <return letters="zh" />
+        </path>
+        <path pattern="i">
+            <return letters="zi" />
+        </path>
+        <path pattern="j">
+            <return letters="zj" />
+        </path>
+        <path pattern="k">
+            <return letters="zk" />
+        </path>
+        <path pattern="l">
+            <return letters="zl" />
+        </path>
+        <path pattern="m">
+            <return letters="zm" />
+        </path>
+        <path pattern="n">
+            <return letters="zn" />
+        </path>
+        <path pattern="o">
+            <return letters="zo" />
+        </path>
+        <path pattern="p">
+            <return letters="zp" />
+        </path>
+        <path pattern="q">
+            <return letters="zq" />
+        </path>
+        <path pattern="r">
+            <return letters="zr" />
+        </path>
+        <path pattern="s">
+            <return letters="zs" />
+        </path>
+        <path pattern="t">
+            <return letters="zt" />
+        </path>
+        <path pattern="u">
+            <return letters="zu" />
+        </path>
+        <path pattern="v">
+            <return letters="zv" />
+        </path>
+        <path pattern="w">
+            <return letters="zw" />
+        </path>
+        <path pattern="x">
+            <return letters="zx" />
+        </path>
+        <path pattern="y">
+            <return letters="zy" />
+        </path>
+        <path pattern="z">
+            <return letters="zz" />
+        </path>
+    </path>
+
+</router>

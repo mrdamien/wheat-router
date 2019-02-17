@@ -29,22 +29,9 @@ namespace Wheat\Router;
 interface RouterInterface
 {
     /**
-     * @param string $uri
+     * @param array $request
      * @return array
      */
-    public function route (string $uri): array;
+    public function route (array $request): array;
 
-    /**
-     * @param string $id
-     * @param array $data
-     * @return void
-     */
-    public function generate (string $id, array $data = []);
-
-    /**
-     * true if the router needs to be regenerated.
-     * @param string $file
-     * @return bool
-     */
-    public function needsRegeneration (string $file): bool;
 }

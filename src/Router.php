@@ -39,27 +39,30 @@ class Router
     public $settings;
 
     /**
-     * @param string[] $c
+     * @param mixed[] $settings
      */
     static public function make (array $settings)
     {
         $settings = [
             'configFile' => $settings['configFile'] ?? 'router.xml',
-            'cacheFile' => $settings['cacheFile'] ?? 'wheat.router.cache.php',
+            'cacheFile' => [
+                $settings['cacheFile'][0] ?? 'wheat.router.cache.php',
+                $settings['cacheFile'][1] ?? 'wheat.router.cache.tester.php'
+            ],
             'regenCache' => $settings['regenCache'] ?? null,
             'renderCommand' => $settings['renderCommand'] ?? 'Wheat\Router::render',
         ];
         
-        if (!\file_exists($settings['cacheFile'])) {
+        if (!\file_exists($settings['cacheFile'][0]) || $settings['regenCache']) {
             self::generateCode($settings);
         }
 
-        $router = require $settings['cacheFile'];
-        if ($settings['regenCache'] || $router->needsRegeneration($settings['configFile'])) {
+        $needsReload = require $settings['cacheFile'][1];
+        if ($needsReload) {
             self::generateCode($settings);
-            $router = require $settings['cacheFile'];
         }
-        return $router;
+
+        return include $settings['cacheFile'][0];
     }
 
     /**
@@ -112,13 +115,12 @@ class Router
         array_unshift($includes, $settings['configFile']);
         $reader->xinclude();
 
-
         if (!$reader->relaxNGValidate(__DIR__.'/Router/schema.xml')) {
             $errors = $restore();
             
             $errors = array_reduce($errors, function($carry, $item){
                 return $carry . "\n" . sprintf(
-                    "%s[%d,%d] %s - Level: %d, Code: ",
+                    "%s[%d,%d] %s - Level: %d, Code: %d",
                     $item->file,
                     $item->line,
                     $item->column,
@@ -127,11 +129,12 @@ class Router
                     $item->code
                 );
             }, '');
-            throw new \Exception("configFile is not valid".$errors);
+            throw new \Exception("configFile is not valid\n".$errors);
         }
         $restore();
 
-        $configParser = new \Wheat\Router\Parser($reader, $includes);
-        $configParser->outputCode($settings['cacheFile']);
+        $configParser = new \Wheat\Router\Parser($reader);
+        $configParser->outputCode($settings['cacheFile'][0]);
+        $configParser->outputTesterFile($includes, $settings);
     }
 }

@@ -7,7 +7,7 @@
     {scheme}       http
     {user}         "user"
     {pass}         "password"
-    {host}         example.com
+    {HTTP_HOST}         example.com
     {port}         8080
     {path}         /some/dir
     {query}        query=true
@@ -89,7 +89,7 @@
     </test>
     <test subject="{HTTPS}" pattern="^$|off">
         <!-- If $_SERVER['HTTPS'] is empty or 'off' redirect to the HTTPS version -->
-        <return code="302" location="https://{host}{path}?{query_str}" />
+        <return code="302" location="https://{HTTP_HOST}{path}?{query_str}" />
     </test>
     <test subject="{HTTP_HOST}" pattern="(www.)?domain.com">
         <call>Wheat\Session::install</call>

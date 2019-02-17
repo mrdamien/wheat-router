@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <router>
     <path pattern="team">
-        <path name="name" pattern="(.+)" id="team.name">
-            <return file="{0}.php" />
+        <path pattern="{name}" id="TeamName">
+            <return file="{name}.php" />
         </path>
         <return file="roster.php" />
     </path>

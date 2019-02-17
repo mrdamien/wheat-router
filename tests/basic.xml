@@ -7,13 +7,13 @@
         <path pattern="jane">
             <return code="200" file="jane.php"  />
         </path>
-        <path name="team_id" pattern="\d+" id="team.id">
+        <path pattern="{id:\d+}" id="teamId">
             <return file="{0}.php" />
         </path>
         <return code="200" location="roster.php"  />
     </path>
     <path pattern="lost">
-        <path name="name" pattern="(?&lt;id&gt;\d+)">
+        <path pattern="{id:\d+}">
             <return code="302" location="/team/{id}"  />
         </path>
     </path>

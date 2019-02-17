@@ -23,48 +23,52 @@
             <case value="1">
                 <return code="401" />
             </case>
+            <default></default>
         </switch>
     </block>
 
-    <test subject="{host}" pattern="/^example.com/">
+    <test subject="{HTTP_HOST}" pattern="/^example.com/">
         <ref name="disallowHotlink" />
         <path>
-            <path name="page" pattern="/(.+)/">
+            <path pattern="{page:.+}">
 
-                <path name="id" pattern="/(\d+)/">
-                    <return file="page/{0}.html" />
+                <path pattern="{id:\d+}">
+                    <return file="page/{id}.html" />
                 </path>
                 <return code="404" />
             </path>
         </path>
     </test>
 
-    <test subject="{host}" pattern="/old-domain.com/">
+    <test subject="{HTTP_HOST}" pattern="/old-domain.com/">
         <return code="302" location="https://example.com" />
     </test>
 
-    <test subject="{host}" pattern="/redirect-please.com/">
-        <return code="302" scheme="{scheme}" path="{path}" query="{query}" fragment="{fragment}" location="{scheme}://{host}{path}{query_str}{fragment_str}" />
+    <test subject="{HTTP_HOST}" pattern="/redirect-please.com/">
+        <return code="302" scheme="{REQUEST_SCHEME}" path="{PATH_INFO}" query="{QUERY_STRING}" location="{REQUEST_SCHEME}://{HTTP_HOST}{REQUEST_URI}" />
     </test>
 
-    <test subject="{host}" pattern="/api.example.com/">
+    <set name="value" />
+
+    <test subject="{HTTP_HOST}" pattern="/api.example.com/">
         <ref name="disallowHotlink" />
 
         <switch>
             <value>{HTTP_X_API_VERSION}</value>
             <case value="1">
+                <!-- strlen could be "header" for example -->
                 <call with="X-API-Message: Please upgrade your client to V2">strlen</call>
                 <return file="upgrade.php" code="301" />
             </case>
             <case value="2">
                 <ref name="checkRateLimit" />
 
-                <path name="book" pattern="book">
-                    <path name="id" pattern="\d+">
-                        <test subject="{REQUEST_METHOD}" pattern="GET|HEAD|OPTIONS">
+                <path pattern="book">
+                    <path pattern="{id:\d+}">
+                        <test subject="{HTTP_METHOD}" pattern="/GET|HEAD|OPTIONS/">
                             <return file="book.php" />
                         </test>
-                        <test subject="{REQUEST_METHOD}" pattern="POST|PUT|PATCH|DELETE">
+                        <test subject="{HTTP_METHOD}" pattern="/POST|PUT|PATCH|DELETE/">
                             <ref name="checkAuth" />
                             <return file="book.php" />
                         </test>
@@ -74,5 +78,69 @@
         </switch>
 
     </test>
+
+    <!--
+    public function urlForumIndex(array $get=[]): string;
+    $router->urlForumIndex(); // '/forum'
+    -->
+    <path pattern="forum" id="ForumIndex">
+        <!--
+        public function urlForumId($forum_id, array $get = []): string;
+        $router->urlForumId(1); // '/forum/1'
+        -->
+        <path pattern="{forum_id:\d+}" id="ForumId">
+            <parameter name="forum_id" type="int" />
+            <!-- 
+            public function urlForumThreadId ($forum_id, $thread_id, array $get = []): string;
+            $router->urlForumThreadId(3, 14, ['foo'=>'b ar']); // '/forum/3/14?foo=b%20ar'
+            -->
+            <path pattern="{thread_id:\d+}" id="ForumThreadId">
+                <parameter name="thread_id" function="intval" type="int" />
+                <return file="thread.php" thread_id="{thread_id}" />
+            </path>
+
+            <return file="forum.php" forum_id="{forum_id}" />
+
+        </path>
+
+
+        <return file="forum-index.php" />
+    </path>
+
+    <path pattern="about">
+        <!--
+        public function urlAboutJohn(): string;
+        $router->urlAboutJohn(); // '/about/john'
+        -->
+        <path pattern="john" id="AboutJohn">
+            <return file="john.php" />
+        </path>
+
+        <!--
+        public function urlAboutJane(): string;
+        $router->urlAboutJane(); // '/about/jane'
+        -->
+        <path pattern="jane" id="AboutJane">
+            <return file="jane.php" />
+        </path>
+    </path>
+
+    <!--
+    public function urlMultiParam($forum_id, $thread_id): string;
+    $router->urlMultiParam(3, 14); // '/3_14'
+    -->
+    <path pattern="{forum_id:\d+}_{thread_id:\d+}" id="MultiParam">
+        <path pattern="summary">
+            <!--
+            public function urlMultiParamSummary($forum_id, $thread_id, $section): string;
+            $router->urlMultiParamSummary(3, 14, 'stats'); // '/3_14/summary/stats'
+            -->
+            <path pattern="{section}" id="MultiParamSummary">
+                <return file="summary.php" forum_id="{forum_id}" thread_id="{thread_id}" section="{section}" />
+            </path>
+        </path>
+
+        <return file="thread.php" forum_id="{forum_id}" thread_id="{thread_id}" />
+    </path>
 
 </router>

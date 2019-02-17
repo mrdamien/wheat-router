@@ -31,6 +31,12 @@
             <zeroOrMore>
                 <ref name="router" />
             </zeroOrMore>
+            <zeroOrMore>
+                <ref name="parameter" />
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="assignment" />
+            </zeroOrMore>
         </interleave>
     </define>
 
@@ -55,6 +61,16 @@
         </element>
     </define>
 
+    <define name="assignment">
+        <element name="set">
+            <oneOrMore>
+                <attribute>
+                    <anyName />
+                </attribute>
+            </oneOrMore>
+        </element>
+    </define>
+
     <define name="block">
         <element name="block">
             <attribute name="name" />
@@ -64,17 +80,52 @@
 
     <define name="path">
         <element name="path">
+            <zeroOrMore>
+                <attribute>
+                    <anyName>
+                        <except>
+                            <name>pattern</name>
+                            <name>id</name>
+                        </except>
+                    </anyName>
+                </attribute>
+            </zeroOrMore>
             <optional>
-                <attribute name="pattern" />
+                <attribute name="pattern">
+                    <data type="string">
+                        <param name="minLength">0</param>
+                    </data>
+                </attribute>
             </optional>
             <optional>
-                <attribute name="name" />
-            </optional>
-            <optional>
-                <attribute name="id" />
+                <attribute name="id">
+                    <data type="string">
+                        <param name="pattern">[a-zA-Z_][a-zA-Z0-9_]*</param>
+                    </data>
+                </attribute>
             </optional>
             <optional>
                 <ref name="anyElement" />
+            </optional>
+        </element>
+    </define>
+
+    <define name="parameter">
+        <element name="parameter">
+            <attribute name="name">
+                <data type="string">
+                    <param name="pattern">[a-zA-Z_][a-zA-Z0-9_]*</param>
+                </data>
+            </attribute>
+            <optional>
+                <attribute name="function">
+                    <data type="string" />
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="type">
+                    <data type="string" />
+                </attribute>
             </optional>
         </element>
     </define>
@@ -98,9 +149,9 @@
                     <ref name="call" />
                 </element>
             </choice>
-            <oneOrMore>
+            <zeroOrMore>
                 <ref name="case" />
-            </oneOrMore>
+            </zeroOrMore>
             <optional>
                 <ref name="default" />
             </optional>

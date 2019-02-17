@@ -26,6 +26,17 @@ declare (strict_types = 1);
 
 namespace Wheat\Router;
 
+interface Pattern {
+    public function getIdentity (): string;
+    public function getType (): string;
+    public function getPattern (): string;
+    public function getTemplate (): string;
+    public function getEncoder (string $param): ?string;
+    public function setEncoder (string $param, string $fn);
+    public function getTypehint (string $param): string;
+    public function setTypehint (string $param, string $type);
+}
+
 class Parser
 {
     const TOKEN_SCOPE_START = 0;
@@ -45,129 +56,162 @@ class Parser
 
     // just to make phpstan be quiet.
     private $url;
-    private $generationDate;
+    private $globals;
+    private $serverRequest;
 
-    public function __construct(\DOMNode $root, array $includes)
+    public function __construct(\DOMNode $root)
     {
         $this->root = $root;
-        $this->includes = $includes;
     }
 
     private static $id = 0;
     public static function makeId ()
     {
         self::$id++;
-        return sprintf('id_%04d', self::$id);
+        return sprintf('id%d', self::$id);
     }
 
-    public function needsRegeneration (string $file): bool
-    {
-        if ($file !== $this->includes[0]) {
-            return true;
-        }
-        if (\filemtime($file) > $this->generationDate) {
-            return true;
-        }
-        foreach ($this->includes as $include) {
-            if (\filemtime($include) > $this->generationDate) {
-                return true;
+    /**
+     * @param array $patterns
+     * @param string $template
+     * @return Pattern
+     */
+    private function regexPattern(array $patterns, string $template): Pattern {
+        return new class ($patterns, $template) implements Pattern {
+            public $patterns;
+            public $id = '', $template, $encoders, $types;
+            public function __construct($patterns, $template)
+            {
+                $this->template = $template;
+                $this->patterns = [
+                    0 => [],
+                    'name' => [],
+                    'regex' => []
+                ];
+                foreach ($patterns['name'] as $i=>$pattern) {
+                    if ($pattern !== '_') {
+                        $this->patterns[0][] = $patterns[0][$i];
+                        $this->patterns['name'][] = $pattern;
+                        $this->patterns['regex'][] = $patterns['regex'][$i];
+                    } else {
+                        $this->template = str_replace($patterns[0][$i], '', $this->template);
+                    }
+                }
+                $this->encoders = [];
+                $this->types = [];
+                $id = $template;
+                foreach ($this->patterns[0] as $i=>$pattern) {
+                    $id = str_replace($pattern, $this->patterns['regex'][$i], $id);
+                    $this->encoders[$this->patterns['name'][$i]] = '\\rawurlencode';
+                    $this->types[$this->patterns['name'][$i]] = '';
+                }
+                $this->id = $id;
             }
-        }
-        return false;
+            public function getType (): string
+            {
+                return 'regex';
+            }
+            public function getIdentity (): string
+            {
+                return $this->id;
+            }
+            public function getPattern (): string
+            {
+                $regex = $this->template;
+                foreach ($this->patterns[0] as $i=>$pattern) {
+                    $name = $this->patterns['name'][$i];
+                    $r = $this->patterns['regex'][$i];
+                    $regex = str_replace($pattern, '(?<'.$name.'>'.$r.')', $regex);
+                }
+                return '^' . $regex . '$';
+            }
+            public function getTemplate (): string
+            {
+                $template = $this->template;
+                foreach ($this->patterns[0] as $i=>$pattern) {
+                    $template = str_replace($pattern, '%s', $template);
+                }
+                return $template;
+            }
+            public function getEncoder (string $param): ?string
+            {
+                return $this->encoders[$param] ?? null;
+            }
+            public function setEncoder (string $param, string $fn)
+            {
+                $this->encoders[$param] = $fn;
+            }
+            public function getTypehint (string $param): string
+            {
+                return $this->types[$param];
+            }
+            public function setTypehint (string $param, string $type)
+            {
+                $this->types[$param] = $type;
+            }
+        };
     }
 
-    private function variableOrString ($value, array ...$matches)
+    /**
+     * @param string $template
+     * @return Pattern
+     */
+    private function regularPattern(string $template): Pattern {
+        return new class ($template) implements Pattern {
+            public $id = '';
+            public function __construct($id)
+            {
+                $this->id = $id;
+            }
+            public function getType (): string
+            {
+                return 'regular';
+            }
+            public function getIdentity (): string
+            {
+                return $this->id;
+            }
+            public function getPattern (): string
+            {
+                return $this->id;
+            }
+            public function getTemplate (): string
+            {
+                return $this->id;
+            }
+            public function getEncoder (string $param): ?string
+            {
+            }
+            public function setEncoder (string $param, string $fn)
+            {
+            }
+            public function getTypehint (string $param): string
+            {
+            }
+            public function setTypehint (string $param, string $type)
+            {
+            }
+        };
+    }
+
+    /**
+     * @param string $pattern
+     * @return Pattern
+     */
+    private function patternFromString (string $pattern): Pattern
     {
-        switch ($value) {
-            case '{scheme}':
-                return $this->url['scheme'] ?? '';
-
-            case '{user}':
-                return $this->url['user'] ?? '';
-
-            case '{pass}':
-                return $this->url['pass'] ?? '';
-
-            case '{host}':
-                return $this->url['host'] ?? '';
-
-            case '{port}':
-                return $this->url['port'] ?? '';
-
-            case '{path}':
-                return $this->url['path'] ?? '/';
-
-            case '{query}':
-                return $this->url['query'] ?? '';
-
-            case '{query_str}':
-                return isset($this->url['query'])
-                    ? (empty($this->url['query']) ? '' : '?'.$this->url['query'])
-                    : '';
-
-            case '{fragment}':
-                return $this->url['fragment'] ?? '';
-
-            case '{fragment_str}':
-            return isset($this->url['fragment'])
-                ? (empty($this->url['fragment']) ? '' : '#'.$this->url['fragment'])
-                : '';
-
-            case 'null':
-                return null;
-
-            case 'true':
-                return true;
-
-            case 'false':
-                return false;
-        }
-
-        
-        if ($value[0] === "{" && $value[-1] === "}") {
-            $index = trim($value, '{}');
-            foreach ($matches as $array) {
-                if (isset($array[$index]) && !empty($array[$index])) {
-                    return $array[$index];
+        $found = preg_match_all('/({(?<name>[^:}]+?)(:(?<regex>(.+?)))?})/', $pattern, $matches);
+        if ($found) {
+            foreach ($matches['regex'] as &$regex) {
+                if ($regex === '') {
+                    $regex = '.+';
                 }
             }
-            return $_SERVER[$index] ?? $_GET[$index] ?? '';
+            return $this->regexPattern($matches, $pattern);
+        } else {
+            return $this->regularPattern($pattern);
         }
 
-        return $value;
-    }
-
-    // called `route` in the final product
-    private function invokeLogic (string $path = '/')
-    {
-        $this->url = parse_url($path);
-
-        $segmentIndex = 0;
-        $segments = \SplFixedArray::fromArray(
-            explode('/', substr($this->url['path'], 1))
-        );
-        $numSegments = $segments->getSize();
-
-    }
-
-    public function generate ($id, array $data = [])
-    {
-        if (!isset($this->paths[$id])) {
-            throw new \Exception("No such path ". $id);
-        }
-
-        $args = [];
-        foreach ($this->paths[$id]['order'] as $name) {
-            if (!isset($data[$name])) {
-                throw new \Exception("Missing argument " . $name);
-            }
-            $args[] = $data[$name];
-        }
-
-        return sprintf(
-            $this->paths[$id]['path'],
-            ...$args
-        );
     }
 
     private function fixRegex (string $regex)
@@ -175,9 +219,9 @@ class Parser
         if (empty($regex)) {
             return '//';
         }
-        if (!preg_match('/\x'.dechex(ord($regex[0])).'[imsxeADSUXJu]*$/', $regex)) {
-            return '/'.$regex.'/';
-        }
+        // if (!preg_match('/\x'.dechex(ord($regex[0])).'[imsxeADSUXJu]*$/', $regex)) {
+        //     return '/'.$regex.'/';
+        // }
         return $regex;
     }
 
@@ -187,22 +231,53 @@ class Parser
     {
         $ret = [];
         $ifSwitch = [];
+        $testStack = [];
         $lastMatchesVar = '[]';
         $regexSwitch = [];
+        $assignments = [];
+        $regexStringSegments = [];
+        $regexCase = [];
 
-        $getSegment = '$segment = ($segmentIndex === $numSegments) ? null : $segments[$segmentIndex++];';
+        $getSegment = '$segment = ($si === $numSegments) ? \'\' : $segments[$si++];';
 
-        $interpretString = function (string $string, $me) use (&$lastMatchesVar)
+
+        $interpret = function($key) {
+            switch ($key) {
+                case 'true': return 'true';
+                case 'null': return 'null';
+                case 'false': return 'false';
+            }
+            
+            if ($key[0] === "{" && $key[-1] === "}") {
+                $code = [];
+                $index = substr($key, 1, strlen($key)-2);
+                for ($i=count($this->matchesStack)-1; $i>=0; $i--) {
+                    $code[] = $this->matchesStack[$i]."['" . $index . "']";
+                }
+                $code[] = '$this->globals'."['" . $index . "']";
+                $code[] = '$_GET'."['" . $index . "']";
+                $code[] = '$this->serverRequest'."['" . $index . "']";
+                $code[] = '""';
+                return '('.implode(" ?? ", $code).')';
+            }
+            return var_export($key, true);
+        };
+
+        $interpretString = function (string $string, $me) use ($interpret)
         {
             $vars = preg_split('/({[a-z0-9_]+})/i', $string,  -1, \PREG_SPLIT_DELIM_CAPTURE);
             for ($i=0; $i<count($vars); $i++) {
                 if (!empty($vars[$i]) && $vars[$i][0] === '{') {
-                    $vars[$i] = '$this->variableOrString(' . $me->phpWrite($vars[$i]) . ', ' . $lastMatchesVar . ')';
+                    $vars[$i] = $interpret($vars[$i]);
                 } else {
                     $vars[$i] = $me->phpWrite($vars[$i]);
                 }
             }
             return implode('.', $vars);
+        };
+
+        $valueAsStringOrEmpty = function($node): string {
+            return $node ? (string)$node->value : '';
         };
 
         foreach ($node->childNodes as $child) {
@@ -224,6 +299,16 @@ class Parser
                         array_push($ret, ...$this->namedBlocks[$fnName]);
                     }
                     break;
+
+                case 'set':
+                    foreach ($child->attributes as $attr) {
+                        $assignments[] = sprintf(
+                            '$this->globals[\'%s\'] = %s;',
+                            (string)$attr->localName,
+                            $interpret((string)$attr->nodeValue)
+                        );
+                    }
+                    break;
                 
                 case 'return':
                     $data = [];
@@ -232,8 +317,7 @@ class Parser
                         $value = $child->attributes->getNamedItem($name)->value;
                         $data[$name] = sprintf(
                             '%s => ' . $interpretString($value, $this),
-                            $this->phpWrite($name),
-                            $this->phpWrite($value)
+                            $this->phpWrite($name)
                         );
                     }
                     if (!isset($data['code'])) {
@@ -251,47 +335,42 @@ class Parser
                         if ($node->nodeName === "value") {
                             $value = $this->controlParse($node, true);
                             if ($value === []) {
-                                $value = '$this->variableOrString('
-                                    .$this->phpWrite((string)$node->textContent)
-                                    .', '.$lastMatchesVar.')';
+                                $value = $interpret((string)$node->textContent);
                             }
                             break;
                         }
                     }
                     if (!$empty) {
-                        $ret[] = 'switch (';
-                        $ret[] = $value;
-                        $ret[] = ') {';
+                        if (is_string($value)) {
+                            $ret[] = 'switch ('.$value.')';
+                        } else {
+                            $ret[] = 'switch (';
+                            $ret[] = $value;
+                            $ret[] = ')';
+                        }
+                        $ret[] = '{';
                         $ret[] = $this->controlParse($child);
                         $ret[] = '}';
                     }
                     break;
 
                 case 'case':
-                    
                     $ret[] = sprintf(
                             'case %s:',
-                            '$this->variableOrString('.
-                                $this->phpWrite(
-                                    (string)$child->attributes->getNamedItem('value')->value
-                                )
-                            .', '.$lastMatchesVar.')'
+                            $interpret((string)$child->attributes->getNamedItem('value')->value)
                     );
                     $ret[] = $this->controlParse($child);
                     $ret[] = 'break;';
                     break;
 
                 case 'default':
-                    
                     $ret[] = 'default:';
                     $ret[] = $this->controlParse($child);
                     $ret[] = 'break;';
                     break;
 
                 case 'call':
-                    $args = $child->attributes->getNamedItem('with') 
-                        ? (string)$child->attributes->getNamedItem('with')->value
-                        : "";
+                    $args = $valueAsStringOrEmpty($child->attributes->getNamedItem('with'));
                     $args = array_filter(str_getcsv($args));
                     foreach ($args as $k=>$arg) {
                         $args[$k] = $interpretString($arg, $this);
@@ -307,79 +386,69 @@ class Parser
                     break;
 
                 case 'test':
-                    $pattern = $child->attributes->getNamedItem('pattern')
-                        ? (string)$child->attributes->getNamedItem('pattern')->value
-                        : '';
-                    $subject = $child->attributes->getNamedItem('subject')
-                        ? (string)$child->attributes->getNamedItem('subject')->value
-                        : '';
+                    $pattern = $valueAsStringOrEmpty($child->attributes->getNamedItem('pattern'));
+                    $subject = $valueAsStringOrEmpty($child->attributes->getNamedItem('subject'));
                     $varName = '$'.self::makeId();
-                    $this->matchesStack[] = $varName;
-                    $ret[] = sprintf(
-                        'if (preg_match(%s, $r = $this->variableOrString(%s, '.$lastMatchesVar.'), %s)) {',
+                    $tmp = [];
+                    $tmp[] = sprintf(
+                        'if (preg_match(%s, %s, %s)) {',
                         $this->phpWrite($this->fixRegex($pattern)),
-                        $this->phpWrite($subject),
+                        $interpret($subject),
                         $varName
                     );
-                    $ret[] = $this->controlParse($child);
-                    $ret[] = '}';
+                    $this->matchesStack[] = $varName;
+                    $tmp[] = $this->controlParse($child);
+                    $tmp[] = '}';
+                    $testStack[] = $tmp;
                     array_pop($this->matchesStack);
                     break;
 
                 case 'path':
-                    $name = $child->attributes->getNamedItem('name')
-                        ? (string)$child->attributes->getNamedItem('name')->value
-                        : '';
-                    $id = $child->attributes->getNamedItem('id')
-                        ? (string)$child->attributes->getNamedItem('id')->value
-                        : '';
+                    $id = $valueAsStringOrEmpty($child->attributes->getNamedItem('id'));
 
                     if ( $child->attributes->getNamedItem('pattern')) {
                         $pattern = (string)$child->attributes->getNamedItem('pattern')->value;
-                        if ($this->isRegex($pattern)) {
-                            $this->nameStack[] = $name;
-                            $this->patternStack[] = '%s';
+                        $pattern = $this->patternFromString($pattern);
+                        $this->patternStack[] = $pattern;
 
-                            $varName = '$'.self::makeId();
-                            $this->matchesStack[] = $varName;
-                            $if = sprintf(
-                                'if (preg_match(%s, $segment, %s)) {',
-                                $this->phpWrite($this->fixRegex($pattern)),
-                                $varName
-                            );
-
-                            $tmp = [];
-                            $tmp[] = $if;
-                            $tmp[] = $this->controlParse($child);
-                            $tmp[] = '}';
-                            $regexSwitch[] = $tmp;
-                            array_pop($this->matchesStack);
+                        if ($pattern->getType() === 'regex') {
+                            foreach ($child->childNodes as $parameter) {
+                                if ($parameter->nodeName === 'parameter') {
+                                    $name = (string)$parameter->attributes->getNamedItem('name')->value;
+                                    $func = $valueAsStringOrEmpty($parameter->attributes->getNamedItem('function'));
+                                    $type = $valueAsStringOrEmpty($parameter->attributes->getNamedItem('type'));
+                                    if ($pattern->getEncoder($name) === null) {
+                                        throw new \Exception("No parameter $name in route");
+                                    }
+                                    $pattern->setEncoder($name, $func);
+                                    $pattern->setTypehint($name, $type);
+                                }
+                            }
+                            $regexCase[] = [$pattern, $child];
                         } else {
-                            $this->patternStack[] = $pattern;
-                            $if = sprintf(
-                                'if ($segment === %s) {',
-                                $this->phpWrite($pattern)
+                            $case = sprintf(
+                                'case %s:',
+                                $this->phpWrite($pattern->getPattern())
                             );
 
                             $tmp = [];
-                            $tmp[] = $if;
+                            $tmp[] = $case;
                             $tmp[] = $this->controlParse($child);
-                            $tmp[] = '}';
+                            $tmp[] = 'break;';
                             $ifSwitch[] = $tmp;
+
+
+                            $patternSegments = array_map(function(Pattern $e){ return $e->getIdentity(); }, $this->patternStack);
+                            $pattern = implode('/', $patternSegments);
+                            if (isset($this->patternHashMap[$pattern])) {
+                                throw new \Exception("Path $pattern seems to have a conflict.");
+                            }
+                            $this->patternHashMap[$pattern] = true;
                         }
                         
                         if (!empty($id)) {
-                            $this->paths[$id] = [
-                                'path' => '/'.implode('/', $this->patternStack),
-                                'order' => $this->nameStack
-                            ];
+                            $this->paths[$id] = $this->patternStack;
                         }
-                        
-                        $pattern = implode('/', $this->patternStack);
-                        if (isset($this->patternHashMap[$pattern])) {
-                            throw new \Exception("Path $pattern seems to have a conflict.");
-                        }
-                        $this->patternHashMap[$pattern] = true;
                         
                         array_pop($this->nameStack);
                         array_pop($this->patternStack);
@@ -391,30 +460,70 @@ class Parser
         }
 
         $code = [];
+        if (count($assignments)) {array_push($code, ...$assignments);}
 
-        if (count($ifSwitch) + count($regexSwitch)) {
-            $code[] = $getSegment;
-            for ($i=0, $l=count($ifSwitch); $i<$l; $i++) {
-                array_push($code, ...$ifSwitch[$i]);
-                if ($i < $l-1) {
-                    $code[] = 'else';
+        if (count($ifSwitch) + count($regexCase) + count($testStack)) {
+            for ($i=0, $l=count($testStack); $i<$l; $i++) {
+                array_push($code, ...$testStack[$i]);
+            }
+            if (count($ifSwitch) + count($regexCase)) {
+                $code[] = $getSegment;
+                $code[] = 'switch ($segment) {';
+                for ($i=0, $l=count($ifSwitch); $i<$l; $i++) {
+                    array_push($code, ...$ifSwitch[$i]);
                 }
-            }
-            for ($i=0, $l=count($regexSwitch); $i<$l; $i++) {
-                array_push($code, ...$regexSwitch[$i]);
-            }
+                $code[] = ['default:'];
 
-            $code[] = '$segmentIndex--;';
+                if (count ($regexCase)) {
+                    $n = 0;
+                    $regex = '/(?';
+                    $regexCount = count($regexCase);
+                    $childNodes = [];
+                    foreach ($regexCase as $index=>$regexStruct) {
+                        [$pattern, $child] = $regexStruct;
+                        $markId = self::makeId();
+                        $regex .= '|'.$pattern->getPattern().'(*:'.$markId.')';
+                        $childNodes[$markId] = $child;
+
+                        if ($index === $regexCount-1 || strlen($regex) >= 1024) {
+                            $regex .= ')/';
+                            $varName = '$'.self::makeId();
+                            $this->matchesStack[] = $varName;
+                            $code[] = [sprintf(
+                                'if (preg_match(%s, $segment, %s)) {',
+                                    $this->phpWrite($regex),
+                                    $varName
+                                )];
+                            $code[] = [['switch ('.$varName.'[\'MARK\']) {']];
+                            foreach ($childNodes as $markId=>$child) {
+                                $code[] = [[[
+                                    'case \''.$markId.'\':',
+                                    $this->controlParse($child),
+                                    'break;'
+                                ]]];
+                            }
+                            array_pop($this->matchesStack);
+
+                            $code[] = [['}']]; // endswitch
+
+
+                            $regex = '/(?';
+                            $code[] = ['}']; // end if
+                        }
+                    }
+                }
+
+
+                $code[] = ['break;'];
+                $code[] = '}';
+            }
+                
+            if (count($ifSwitch) + count($regexSwitch)) $code[] = '$si--;';
         }
 
         if (count($ret)) {array_push($code, ...$ret);}
 
         return $code;
-    }
-
-    private function isRegex (string $pattern)
-    {
-        return (bool)preg_match('/[\|\(\)\\\\\/\?]/', $pattern);
     }
 
     private function phpWrite ($var) {
@@ -436,13 +545,62 @@ class Parser
         }
     }
 
+    public function writePathFunctions($fp)
+    {
+        foreach ($this->paths as $id=>$pathArray) {
+            /** @var Pattern $path */
+            $arguments = [];
+            $parameters = [];
+            $pathTemplate = '';
+            foreach ($pathArray as $part) {
+                if ($part->getTemplate() === '') {
+                    continue;
+                }
+                if($part->getType() === 'regex') {
+                    foreach ($part->patterns['name'] as $arg) {
+                        $arguments[] = (empty($part->getTypehint($arg)) ? '' : $part->getTypehint($arg).' ') . '$'.$arg;
+                        if (empty($part->getEncoder($arg))) {
+                            $parameters[] = '$'.$arg;
+                        } else {
+                            $parameters[] = $part->getEncoder($arg).'($'.$arg.')';
+                        }
+                    }
+                }
+                $pathTemplate .= '/'.$part->getTemplate();
+            }
+
+            fwrite($fp, sprintf("    public function url%s (%s): string\n", $id, implode(", ", $arguments)));
+            fwrite($fp,         "    {\n");
+            if (count($parameters)) {
+                fwrite($fp, sprintf("        return sprintf(\"%s\", %s);\n", empty($pathTemplate)?'/':$pathTemplate , implode(", ", $parameters)));
+            } else {
+                fwrite($fp, sprintf("        return \"%s\";\n", empty($pathTemplate)?'/':$pathTemplate));
+            }
+            fwrite($fp, "    }\n");
+            fwrite($fp, "\n");
+
+        }
+    }
+
+    // This pre1/2 post1/2 is necessary garbage for testing.
+    // We cannot re-use a classname in one instance of PHP.
+    // Thus after we generate a class once, subsequent classes
+    // should be annonymous. 
+    static private $preOne = 'class CompiledWheatRouter';
+    static private $preTwo = 'return new class';
+
+    static private $postOne = 'return new CompiledWheatRouter;';
+    static private $postTwo = '';
+
+    /**
+     * @param string $file
+     * @return void
+     */
     public function outputCode (string $file)
     {
         $this->readBlocks($this->root->documentElement);
 
-        $this->syntaxTree = [
-            self::TOKEN_SCOPE_START
-        ];
+        $this->syntaxTree = [];
         array_push($this->syntaxTree, ...$this->controlParse($this->root->documentElement, $this->regexTree));
 
         $fp = fopen($file, 'w');
@@ -450,17 +608,16 @@ class Parser
             throw new \Exception('Could not open Wheat\\Router cache file for writting');
         }
 
+        $pre = self::$preOne;
         fwrite($fp, "<?php /* Code automatically generated by Wheat\Router. Do not edit. */\n");
-        fwrite($fp, "return new class implements \Wheat\Router\RouterInterface {\n");
-        fwrite($fp, "    public \$url      = [];\n");
-        fwrite($fp, "    public \$paths    = " . var_export($this->paths, true).";\n");
-        fwrite($fp, "    public \$includes    = " . var_export($this->includes, true).";\n");
-        fwrite($fp, "    public \$generationDate = " . \time().";\n");
-        
+        fwrite($fp, "$pre implements \Wheat\Router\RouterInterface {\n");
+        fwrite($fp, "    private \$url, \$serverRequest, \$globals;\n");
+        self::$preOne = self::$preTwo;
+        $this->writePathFunctions($fp);
 
         $lines = file(__FILE__);
         $reflectionClass = new \ReflectionClass($this);
-        foreach (['variableOrString', 'generate', 'needsRegeneration'] as $methodName) {
+        foreach ([] as $methodName) {
             $method = $reflectionClass->getMethod($methodName);
             $start = $method->getStartLine();
             $end = $method->getEndLine();
@@ -481,15 +638,24 @@ class Parser
 
 
         
-        fwrite($fp, "    public function route(string \$path): array\n");
-
-        $method = $reflectionClass->getMethod('invokeLogic');
-        $start = $method->getStartLine();
-        $end = $method->getEndLine()-1;
-        for($i=$start; $i<$end; $i++) {
-            fwrite($fp, $lines[$i]);     
-        }
-            
+        fwrite($fp, "    public function route(array \$request): array\n");
+        fwrite($fp, "    {\n");
+        fwrite($fp, "        \$this->serverRequest = \$request;\n");
+        fwrite($fp, "        \$this->globals = [];\n");
+        fwrite($fp, "        \$this->serverRequest['CURRENT_URL'] = sprintf('%s://%s%s', \$request['HTTP_SCHEME']??'', \$request['HTTP_HOST']??'', \$request['REQUEST_URI']??'');\n");
+        fwrite($fp, "        \$this->serverRequest['CURRENT_URL_ENCODED'] = \\rawurlencode(\$this->serverRequest['CURRENT_URL']);\n");
+        fwrite($fp, "        \$this->url = parse_url(\$request['REQUEST_URI'] ?? \$request['PATH_INFO'] ?? '');\n");
+        fwrite($fp, "        // si = segment index\n");
+        fwrite($fp, "        \$si = 0;\n");
+        fwrite($fp, "        \$segments = [];\n");
+        fwrite($fp, "        foreach (explode('/', \$this->url['path']) as \$p)\n");
+        fwrite($fp, "            if (strlen(\$p)) \$segments[] = \$p;\n");
+        fwrite($fp, "        \$segments = \SplFixedArray::fromArray(\n");
+        fwrite($fp, "            \$segments,\n");
+        fwrite($fp, "            false\n");
+        // fwrite($fp, "            explode('/', substr(\$this->url['path'], 1))\n");
+        fwrite($fp, "        );\n");
+        fwrite($fp, "        \$numSegments = \$segments->getSize();\n");
 
         $output($this->syntaxTree, 2);
 
@@ -498,8 +664,29 @@ class Parser
         fwrite($fp, "            'code' => '404'\n");
         fwrite($fp, "        ];\n");
         fwrite($fp, "    }\n");
-        fwrite($fp, "};");     
+        fwrite($fp, "};");
+        $post = self::$postOne;
+        fwrite($fp, "$post");
+        self::$postOne = self::$postTwo;
     }
 
+    public function outputTesterFile(array $includes, array $settings)
+    {
+        $fp = fopen($settings['cacheFile'][1], 'w');
+        if ($fp === false) {
+            throw new \Exception('Could not open Wheat\\Router tester file for writting');
+        }
+        $now = \time();
+        fwrite($fp, "<?php /* Code automatically generated by Wheat\Router. Do not edit. */\n");
+        // fwrite($fp, "if (\\filemtime('{$settings['cacheFile'][0]}') > $now) {\n");
+        // fwrite($fp, "    return true;\n");
+        // fwrite($fp, "}\n");
+        foreach ($includes as $include) {
+            fwrite($fp, "if (\\filemtime('$include') > $now) {\n");
+            fwrite($fp, "    return true;\n");
+            fwrite($fp, "}\n");
+        }
+        fwrite($fp, "return false;\n");
 
+    }
 }
