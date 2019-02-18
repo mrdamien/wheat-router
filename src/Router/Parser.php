@@ -340,17 +340,19 @@ class Parser
                             break;
                         }
                     }
+                    $tmp = [];
                     if (!$empty) {
                         if (is_string($value)) {
-                            $ret[] = 'switch ('.$value.')';
+                            $tmp[] = 'switch ('.$value.')';
                         } else {
-                            $ret[] = 'switch (';
-                            $ret[] = $value;
-                            $ret[] = ')';
+                            $tmp[] = 'switch (';
+                            $tmp[] = $value;
+                            $tmp[] = ')';
                         }
-                        $ret[] = '{';
-                        $ret[] = $this->controlParse($child);
-                        $ret[] = '}';
+                        $tmp[] = '{';
+                        $tmp[] = $this->controlParse($child);
+                        $tmp[] = '}';
+                        $testStack[] = $tmp;
                     }
                     break;
 
