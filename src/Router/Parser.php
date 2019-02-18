@@ -247,7 +247,9 @@ class Parser
                 case 'null': return 'null';
                 case 'false': return 'false';
             }
-            
+            if (strlen($key) < 2) {
+                return var_export($key, true);
+            }
             if ($key[0] === "{" && $key[-1] === "}") {
                 $code = [];
                 $index = substr($key, 1, strlen($key)-2);
