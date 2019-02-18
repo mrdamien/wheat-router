@@ -651,7 +651,7 @@ class Parser
         fwrite($fp, "        \$path = \$request['REQUEST_URI'] ?? \$request['PATH_INFO'] ?? '';\n");
         fwrite($fp, "        \$pathinfo = \pathinfo(\$path);\n");
         fwrite($fp, "        if (isset(\$pathinfo['extension']) && strlen(\$pathinfo['extension'])) {\n");
-        fwrite($fp, "            \$path = \substr(\$path, 0, \strlen(\$path)-\strlen(\$pathinfo['extension']));\n");
+        fwrite($fp, "            \$path = \substr(\$path, 0, \strlen(\$path)-\strlen(\$pathinfo['extension'])-1);\n");
         fwrite($fp, "            \$this->globals['extension'] = \$pathinfo['extension'];\n");
         fwrite($fp, "        }\n");
         fwrite($fp, "        \$this->url = parse_url(\$path);\n");
