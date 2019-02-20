@@ -649,12 +649,12 @@ class Parser
         fwrite($fp, "        \$this->serverRequest['CURRENT_URL'] = sprintf('%s://%s%s', \$request['HTTP_SCHEME']??'', \$request['HTTP_HOST']??'', \$request['REQUEST_URI']??'');\n");
         fwrite($fp, "        \$this->serverRequest['CURRENT_URL_ENCODED'] = \\rawurlencode(\$this->serverRequest['CURRENT_URL']);\n");
         fwrite($fp, "        \$path = \$request['REQUEST_URI'] ?? \$request['PATH_INFO'] ?? '';\n");
-        fwrite($fp, "        \$pathinfo = \pathinfo(\$path);\n");
+        fwrite($fp, "        \$this->url = parse_url(\$path);\n");
+        fwrite($fp, "        \$pathinfo = \pathinfo(\$this->url['path']);\n");
         fwrite($fp, "        if (isset(\$pathinfo['extension']) && strlen(\$pathinfo['extension'])) {\n");
         fwrite($fp, "            \$path = \substr(\$path, 0, \strlen(\$path)-\strlen(\$pathinfo['extension'])-1);\n");
         fwrite($fp, "            \$this->globals['extension'] = \$pathinfo['extension'];\n");
         fwrite($fp, "        }\n");
-        fwrite($fp, "        \$this->url = parse_url(\$path);\n");
         fwrite($fp, "        // si = segment index\n");
         fwrite($fp, "        \$si = 0;\n");
         fwrite($fp, "        \$segments = [];\n");
