@@ -551,6 +551,7 @@ class Parser
 
     public function writePathFunctions($fp)
     {
+        $sprintfTemplates = [];
         foreach ($this->paths as $id=>$pathArray) {
             /** @var Pattern $path */
             $arguments = [];
@@ -572,6 +573,7 @@ class Parser
                 }
                 $pathTemplate .= '/'.$part->getTemplate();
             }
+            $sprintfTemplates[$id] = $pathTemplate;
 
             fwrite($fp, sprintf("    public function url%s (%s): string\n", $id, implode(", ", $arguments)));
             fwrite($fp,         "    {\n");
@@ -584,6 +586,9 @@ class Parser
             fwrite($fp, "\n");
 
         }
+
+        fwrite($fp, "    public \$routes = ".var_export($sprintfTemplates, true).";\n");
+
     }
 
     // This pre1/2 post1/2 is necessary garbage for testing.
