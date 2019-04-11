@@ -251,8 +251,21 @@ class Parser
                 return var_export($key, true);
             }
             if ($key[0] === "{" && $key[-1] === "}") {
-                $code = [];
                 $index = substr($key, 1, strlen($key)-2);
+
+                // handle cases like: {variable:strtolower:ucfirst}
+                $fnStr = '';
+                $fnStrEnd = '';
+                $functions = \explode(':', $index);
+
+                while (count($functions) > 1) {
+                    [$fn] = array_splice($functions, 1, 1);
+                    $fnStr = $fn . '(' . $fnStr;
+                    $fnStrEnd .= ')';
+                }
+                $index = $functions[0];
+
+                $code = [];
                 for ($i=count($this->matchesStack)-1; $i>=0; $i--) {
                     $code[] = $this->matchesStack[$i]."['" . $index . "']";
                 }
@@ -260,17 +273,25 @@ class Parser
                 $code[] = '$_GET'."['" . $index . "']";
                 $code[] = '$this->serverRequest'."['" . $index . "']";
                 $code[] = '""';
-                return '('.implode(" ?? ", $code).')';
+                return $fnStr . '('.implode(" ?? ", $code).')' . $fnStrEnd;
             }
             return var_export($key, true);
         };
 
         $interpretString = function (string $string, $me) use ($interpret)
         {
-            $vars = preg_split('/({[a-z0-9_]+})/i', $string,  -1, \PREG_SPLIT_DELIM_CAPTURE);
+            $vars = preg_split('/({[a-z0-9_]+(:[a-z0-9_\\\]+)*})/i', $string,  -1, \PREG_SPLIT_DELIM_CAPTURE);
+
             for ($i=0; $i<count($vars); $i++) {
+                $advance = false;
                 if (!empty($vars[$i]) && $vars[$i][0] === '{') {
+                    $advance = strpos($vars[$i], ':');
                     $vars[$i] = $interpret($vars[$i]);
+
+                    // discard the next var because it contains :functionName
+                    if ($advance !== false) {
+                        array_splice($vars, $i+1, 1);
+                    }
                 } else {
                     $vars[$i] = $me->phpWrite($vars[$i]);
                 }
@@ -295,7 +316,7 @@ class Parser
                 case 'ref':
                     $fnName = (string)$child->attributes->getNamedItem('name')->value;
                     if (!isset($this->namedBlocks[$fnName])) {
-                        throw new \Exception("Found a <ref> with not matching <block>: " . $fnName);
+                        throw new \Exception("Found a <ref> with no matching <block>: " . $fnName);
                     }
                     if (count($this->namedBlocks[$fnName])) {
                         array_push($ret, ...$this->namedBlocks[$fnName]);
