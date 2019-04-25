@@ -1,12 +1,9 @@
 # Wheat/Route - An XML/PHP metaprogramming router
 
-* Goals:
-    * Flexibility
-    * Composability
-    * Speed
-
-It is programmed via XML that gets converted to PHP.
-
+Goals
+* Flexibility
+* Composability
+* Speed
 
 ## Simplest example:
 
@@ -71,6 +68,27 @@ GET /foobar     -> redirect
 
 When a &lt;return /&gt; element is reached, the attributes are returned as key=>value pairs.
 'code' will default to 200 unless otherwise specified.
+
+## Patterns
+
+Patterns are surrounded by curly braces, and have a few modifiers:
+
+- A name, which must come first: {foobar}
+- A regex pattern can be specified, like: \d+
+- Types can be 'int' or 'float' or 'string', or not specified (string).
+- A series of functions that can be used to sanitize/format URLS. /the-quick-brown-fox -> {title:strtoupper} -> THE-QUICK-BROWN-FOX. More on this later.
+
+    {foobar:\d+:int:intval}
+    Name: foobar
+    Regex: \d+
+    Type: int
+    Functions: intval()
+    
+    {title:([a-z]+_?)+:string:\my_ns\to_url_slug}
+    Name: title
+    Regex: ([a-z]+_?)+
+    Type: string
+    Functions: \my_ns\to_url_slug()
 
 ## Conditionals
 Do something if subject matches pattern, like enforce HTTPS
@@ -170,16 +188,65 @@ forum.xml
 /forum/10 -> ForumIndex
 ```
 
+## Routing-styles
+Multiple styles of routing, or combinations thereof are possible.
+
+Controller->Method Example:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns:xi="http://www.w3.org/2001/XInclude">
+    <path pattern="">
+        <return controller="DefaultController::index" />
+        <path pattern="{controller}">
+            <return controller="{controller:ucfirst}::index" />
+            <path pattern="{action}">
+                <return  controller="{controller:ucfirst}::{action}" />
+            </path>
+        </path>
+    </path>
+</router>
+```
+```
+/        -> DefaultController::index
+/foo     -> Foo::index
+/foo/bar -> Foo::bar
+```
+
+ADR example:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns:xi="http://www.w3.org/2001/XInclude">
+    <path pattern="{domain}">
+        <path pattern="{action}">
+            <return action="App\Http\{domain:strtolower:ucfirst}\{HTTP_METHOD:strtolower:ucfirst}{action:ucfirst}">
+            </return>
+            <path pattern="{id:\d+}">
+                <return action="App\Http\{domain:strtolower:ucfirst}\{HTTP_METHOD:strtolower:ucfirst}{action:ucfirst}">
+                    <arg id="{id}" />
+                </return>
+            </path>
+        </path>
+        <return action="App\Http\{domain:strtolower:ucfirst}\{HTTP_METHOD:strtolower:ucfirst}Index" />
+    </path>
+</router>
+```
+```
+GET  /foo     -> App\Http\Foo\GetIndex
+POST /foo/bar -> App\Http\Foo\PostBar
+PUT  /cat/dog -> App\Http\Cat\PutDog
+```
+
+
+
+
 ## URL Generation
 To ease url generation, attach an id="UpperCamelCase" to a path. Ex:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <router xmlns:xi="http://www.w3.org/2001/XInclude">
     <path pattern="{one:\d+}" id="one">
-        <path pattern="{two:\d+}" id="Two">
-            <parameter name="two" type="int" />
-            <path pattern="{three:\d+}" id="Three">
-                <parameter name="three" function="intval" />
+        <path pattern="{two:\d+:int}" id="Two">
+            <path pattern="{three:\d+:int:intval}" id="Three">
                 ...
             </path>
             ...
@@ -188,7 +255,7 @@ To ease url generation, attach an id="UpperCamelCase" to a path. Ex:
     </path>
 </router>
 ```
-The generated functions will have a signature to aid with autocomplete. Parameters can be typehinted, or passed through a function first. Ex: $two will be type-cast as an int, $three will be passed through intval().
+The generated functions will have a signature to aid with autocomplete. Parameters can be typehinted, or passed through a function first. Ex: $two will be type-hinted as an int, $three will be passed through intval().
 ```php
 public function urlOne ($forum_id): string;
 public function urlTwo ($forum_id, int $two): string;

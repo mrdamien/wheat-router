@@ -24,15 +24,22 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
+use Wheat\Router\Element;
+use Wheat\Router\Element\ValueTrait;
 
-interface RouterInterface
+class CaseElement extends Element
 {
-    /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
-     */
-    public function route (array $request, ?array $get = null): array;
+    use ValueTrait;
 
+    public function toCode ()
+    {
+        yield 'case '.$this->interpretString($this->getValue()).':';
+        yield self::INDENT;
+
+        yield from parent::toCode();
+
+        yield 'break;';
+        yield self::UNINDENT;
+    }
 }

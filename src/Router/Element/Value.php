@@ -24,15 +24,15 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
+use Wheat\Router\Element;
 
-interface RouterInterface
+class Value extends Element
 {
-    /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
-     */
-    public function route (array $request, ?array $get = null): array;
+    use ValueTrait;
 
+    public function toCode ()
+    {
+        yield $this->interpretString($this->getValue());
+    }
 }

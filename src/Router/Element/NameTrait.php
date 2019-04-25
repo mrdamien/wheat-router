@@ -24,15 +24,23 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
 
-interface RouterInterface
+use Wheat\Router\Element;
+
+trait NameTrait 
 {
-    /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
-     */
-    public function route (array $request, ?array $get = null): array;
 
+    public $name;
+    
+    public function setName (string $n): Element
+    {
+        $this->name = $n;
+        return $this;
+    }
+    
+    public function getName (): string
+    {
+        return $this->name;
+    }
 }

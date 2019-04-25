@@ -16,7 +16,7 @@
     {fragment_str} #fragment
     Any variables not sent are empty strings.
 
-    $_GET variables can be accessed by using its name
+    GET variables can be accessed by using its name
     {id}
 
     Segment variables can be accessed with their name:

@@ -24,15 +24,47 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
+use Wheat\Router\Element;
 
-interface RouterInterface
+class Router extends Element
 {
     /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
+     * @var Block[]
      */
-    public function route (array $request, ?array $get = null): array;
+    public $blocks = [];
 
+    public function getType (): string
+    {
+        return self::TYPE_ROUTER;
+    }
+
+    public function appendBlock (Block $b): Router
+    {
+        $this->blocks[] = $b;
+        return $this;
+    }
+
+    public function getBlock (string $name): Block
+    {
+        /** @var Block $block */
+        foreach ($this->blocks as $block) {
+            if ($block->getName() === $name) {
+                return $block;
+            }
+        }
+
+        if ($this->getParent()) {
+            return $this->getParent()->getRouter()->getBlock($name);
+        }
+
+        throw new \Exception(sprintf("No block named '%s' was found in scope", htmlentities($name)));
+    }
+
+    public $sprintfs = [];
+
+    public function addSprintfRoute ($name, $pattern)
+    {
+        $this->sprintfs[$name] = $pattern;
+    }
 }

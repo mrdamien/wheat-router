@@ -8,7 +8,12 @@
 
     <block name="checkRateLimit">
         <switch>
-            <value><call with="1, 2">strcmp</call></value>
+            <value>
+                <call function="strcmp">
+                    <arg value="1" />
+                    <arg value="2" />
+                </call>
+            </value>
             <case value="0">
                 <return code="429" />
             </case>
@@ -57,7 +62,9 @@
             <value>{HTTP_X_API_VERSION}</value>
             <case value="1">
                 <!-- strlen could be "header" for example -->
-                <call with="X-API-Message: Please upgrade your client to V2">strlen</call>
+                <call function="strlen">
+                    <arg value="X-API-Message: Please upgrade your client to V2" />
+                </call>
                 <return file="upgrade.php" code="301" />
             </case>
             <case value="2">
@@ -88,14 +95,12 @@
         public function urlForumId($forum_id, array $get = []): string;
         $router->urlForumId(1); // '/forum/1'
         -->
-        <path pattern="{forum_id:\d+}" id="ForumId">
-            <parameter name="forum_id" type="int" />
+        <path pattern="{forum_id:\d+:int}" id="ForumId">
             <!-- 
             public function urlForumThreadId ($forum_id, $thread_id, array $get = []): string;
             $router->urlForumThreadId(3, 14, ['foo'=>'b ar']); // '/forum/3/14?foo=b%20ar'
             -->
-            <path pattern="{thread_id:\d+}" id="ForumThreadId">
-                <parameter name="thread_id" function="intval" type="int" />
+            <path pattern="{thread_id:\d+:int}" id="ForumThreadId">
                 <return file="thread.php" thread_id="{thread_id}" />
             </path>
 

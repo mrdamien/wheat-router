@@ -24,15 +24,45 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
+use Wheat\Router\Element;
 
-interface RouterInterface
+class SwitchElement extends Element
 {
-    /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
-     */
-    public function route (array $request, ?array $get = null): array;
+    public function toCode ()
+    {
+        $children = [];
+        $value = null;
 
+        foreach ($this->children as $child) {
+            if ($child instanceof Value) {
+                $value = $child;
+            } else {
+                $children[] = $child;
+            }
+        }
+
+        if (count($value->children) > 0) {
+            yield 'switch (';
+                foreach ($value->children as $child) {
+                    yield from $child->toCode('');
+                }
+            yield ') {';
+        } else {
+            yield 'switch (';
+            yield self::INDENT;
+            yield from $value->toCode();
+            yield self::UNINDENT;
+            yield ') {';
+        }
+
+        yield self::INDENT;
+
+        foreach ($children as $child) {
+            yield from $child->toCode();
+        }
+
+        yield self::UNINDENT;
+        yield '}';
+    }
 }

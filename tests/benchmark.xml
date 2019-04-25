@@ -8,7 +8,9 @@
 
     <block name="requireLogin">
         <switch>
-            <value><call>User::isLoggedIn</call></value>
+            <value>
+                <call function="User::isLoggedIn" />
+            </value>
             <case value="false">
                 <return code="302" location="https://reddit.com/login?dest={CURRENT_URL_ENCODED}"  />
             </case>
@@ -35,15 +37,12 @@
     <path pattern="r">
 
         <path pattern="{subreddit:[a-zA-Z][a-zA-Z0-9_]+}" id="SubReddit">
-            <parameter name="subreddit" type="string" />
             <return subreddit="{subreddit}" controller="ViewSubreddit" sort="hot" format="{format}" />
 
             <path pattern="comments{_:\.rss|\.json}">
                 <path pattern="{post_id:[a-z0-9]+}">
-                    <parameter name="post_id" type="string" />
 
                     <path pattern="{title_string:[a-z0-9_]+}{_:\.rss|\.json}" id="SubRedditPost">
-                        <parameter name="title_string" type="string" function="prepare_title" />
                         <return post_id="{post_id}" subreddit="{subreddit}" controller="ViewSubredditPost" format="{format}" />
                     </path>
                     <return post_id="{post_id}" subreddit="{subreddit}" controller="ViewSubredditPost" format="{format}" />

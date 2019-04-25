@@ -2,7 +2,7 @@
 <router xmlns:xi="http://www.w3.org/2001/XInclude">
     <path pattern="post">
         <path pattern="{id:\d+}" id="PostId">
-            <return />
+            <return post_id="{id}" />
         </path>
     </path>
 </router>

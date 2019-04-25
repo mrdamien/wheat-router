@@ -24,15 +24,30 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
+use Wheat\Router\Element;
 
-interface RouterInterface
+class BlankPath extends Path
 {
-    /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
-     */
-    public function route (array $request, ?array $get = null): array;
+    use NameTrait;
 
+    public $pattern;
+    
+    public function setPattern (string $p): Element
+    {
+        $this->pattern = $p;
+        return $this;
+    }
+    
+    public function getPattern (): string
+    {
+        return '';
+    }
+    
+    public function getType (): string
+    {
+        return self::TYPE_PATH;
+    }
+    
+    public function addRoute () {}
 }

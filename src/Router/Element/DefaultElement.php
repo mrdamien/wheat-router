@@ -24,15 +24,20 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
+use Wheat\Router\Element;
 
-interface RouterInterface
+class DefaultElement extends Element
 {
-    /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
-     */
-    public function route (array $request, ?array $get = null): array;
 
+    public function toCode ()
+    {
+        yield 'default:';
+        yield self::INDENT;
+
+        yield from parent::toCode();
+
+        yield 'break;';
+        yield self::UNINDENT;
+    }
 }

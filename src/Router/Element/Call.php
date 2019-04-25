@@ -24,15 +24,38 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
+use Wheat\Router\Element;
 
-interface RouterInterface
+class Call extends Element
 {
+    public $fn;
+    
     /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
+     * Accepts a string of CSV
+     *
+     * @param string $args
+     * @return Element
      */
-    public function route (array $request, ?array $get = null): array;
+    public function setFunction (string $fn): Element
+    {
+        $this->fn = $fn;
+        return $this;
+    }
+    
+    public function getFunction (): string
+    {
+        return $this->fn;
+    }
 
+    public function toCode($semi = ';')
+    {
+        $args = [];
+        foreach ($this->children as $child) {
+            $code = iterator_to_array($child->toCode());
+            $args[] = implode('', $code);
+        }
+
+        yield '\call_user_func_array(\''.$this->getFunction().'\', ['.implode(',', $args).'])' . $semi;
+    }
 }

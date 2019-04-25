@@ -32,9 +32,6 @@
                 <ref name="router" />
             </zeroOrMore>
             <zeroOrMore>
-                <ref name="parameter" />
-            </zeroOrMore>
-            <zeroOrMore>
                 <ref name="assignment" />
             </zeroOrMore>
         </interleave>
@@ -110,32 +107,14 @@
         </element>
     </define>
 
-    <define name="parameter">
-        <element name="parameter">
-            <attribute name="name">
-                <data type="string">
-                    <param name="pattern">[a-zA-Z_][a-zA-Z0-9_]*</param>
-                </data>
-            </attribute>
-            <optional>
-                <attribute name="function">
-                    <data type="string" />
-                </attribute>
-            </optional>
-            <optional>
-                <attribute name="type">
-                    <data type="string" />
-                </attribute>
-            </optional>
-        </element>
-    </define>
-
     <define name="call">
         <element name="call">
             <optional>
-                <attribute name="with" />
+                <attribute name="function" />
             </optional>
-            <data type="string"></data>
+            <zeroOrMore>
+                <ref name="argument" />
+            </zeroOrMore>
         </element>
     </define>
 
@@ -143,7 +122,7 @@
         <element name="switch">
             <choice>
                 <element name="value">
-                    <data type="string"></data>
+                    <data type="string" />
                 </element>
                 <element name="value">
                     <ref name="call" />
@@ -186,6 +165,15 @@
                     <anyName />
                 </attribute>
             </zeroOrMore>
+            <zeroOrMore>
+                <ref name="argument" />
+            </zeroOrMore>
+        </element>
+    </define>
+
+    <define name="argument">
+        <element name="arg">
+            <attribute name="value" />
         </element>
     </define>
 

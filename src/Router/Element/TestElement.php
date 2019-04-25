@@ -24,15 +24,34 @@
  */
 declare (strict_types = 1);
 
-namespace Wheat\Router;
+namespace Wheat\Router\Element;
+use Wheat\Router\Element;
 
-interface RouterInterface
+class TestElement extends Element
 {
-    /**
-     * @param array $request
-     * @param array|null $get
-     * @return array
-     */
-    public function route (array $request, ?array $get = null): array;
+    use ValueTrait;
 
+    public $pattern;
+    
+    public function setPattern (string $p): Element
+    {
+        $this->pattern = $p;
+        return $this;
+    }
+    
+    public function getPattern ()
+    {
+        return $this->pattern;
+    }
+
+    public function toCode ()
+    {
+        yield 'if (\preg_match('.$this->interpretString($this->getPattern()).', '.$this->interpretString($this->getValue()).')) {';
+        yield self::INDENT;
+            
+        yield from parent::toCode();
+
+        yield self::UNINDENT;
+        yield '}';
+    }
 }
