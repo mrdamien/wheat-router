@@ -37,6 +37,11 @@ class ReturnElement extends Element
         return $this;
     }
 
+    public function getType (): string
+    {
+        return self::TYPE_RETURN;
+    }
+
     public function toCode ()
     {
         yield 'return [';

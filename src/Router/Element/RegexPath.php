@@ -26,6 +26,7 @@ declare (strict_types = 1);
 
 namespace Wheat\Router\Element;
 use Wheat\Router\Element;
+use Wheat\Router\Parser;
 
 class RegexPath extends Path
 {
@@ -45,6 +46,7 @@ class RegexPath extends Path
     {
         $segments = [];
         preg_match_all('/({(?<name>[^:}]+?)(:(?<regex>(.+?)))?})/', $this->pattern, $matches);
+        $i = 0;
         foreach ($matches['name'] as $i=>$name) {
             $segments[$name] = $i+1;
         }
@@ -53,17 +55,8 @@ class RegexPath extends Path
     
     public function getPattern (): string
     {
-        preg_match_all('/({(?<name>[^:}]+?)(:(?<regex>(.+?)))?})/', $this->pattern, $matches);
-        $template = $this->pattern;
-        $regex = $template;
-        foreach ($matches['name'] as $i=>$name) {
-            $r = $matches['regex'][$i];
-            if ($r === "") $r = '.+';
-            // $regex = str_replace($matches[0][0], '(?<'.$name.'>'.$r.')', $regex);
-            $regex = str_replace($matches[0][0], '('.$r.')', $regex);
-        }
-        // return $regex;
-        return '^' . $regex . '$';
+        $parsed = Parser::parsePatternString($this->pattern);
+        return $parsed['regex'];
     }
     
     public function getType (): string

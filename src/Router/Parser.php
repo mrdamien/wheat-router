@@ -49,6 +49,9 @@ class Parser
     const TOKEN_SCOPE_END = 1;
 
 
+    const FLOAT_REGEX = '[-+Ee.0-9]*';
+    const INT_REGEX = '\d+';
+
     private $root;
     private $addMethods = [];
 
@@ -79,6 +82,7 @@ class Parser
         \preg_match_all('/{\w+(:[^}]+)?}/', $s, $matches);
 
         $sprintf = $s;
+        $regex = $s;
         foreach ($matches[0] as $argument) {
             $originalArg = $argument;
             $sprintf = \str_replace($originalArg, '%s', $sprintf);
@@ -86,20 +90,35 @@ class Parser
             $argumentParts = \explode(':', $argument);
 
             $functions = [];
-            $pattern['names'][] = $argumentParts[0];
+            $pattern['names'][] = array_shift($argumentParts);
             
             $type = "string";
+            $r = null;
+
             foreach ($argumentParts as $i=>$part) {
-                if ($part === "int") {
-                    $type = "int";
-                } else if ($part === "float") {
-                    $type = "float";
-                } else if ($part === "string") {
-                    $type = "string";
-                } else if ($i > 0 && \preg_match(self::FN_NAME_REGEX, $part)) {
+                switch ($part) {
+                    case 'int':
+                        $r = self::INT_REGEX;
+                        $type = "int";
+                        break;
+                    case 'float':
+                        $r = self::FLOAT_REGEX;
+                        $type = "float";
+                        break;
+                }
+
+                if (\preg_match(self::FN_NAME_REGEX, $part)) {
                     $functions[] = $part;
+                } else {
+                    $r = $part;
                 }
             }
+
+            if ($r === null) $r = '.+';
+
+            // $regex = str_replace($matches[0][0], '(?<'.$name.'>'.$r.')', $regex);
+            $regex = str_replace($originalArg, '('.$r.')', $regex);
+            
 
             $pattern['types'][] = $type;
             $pattern['functions'][] = $functions;
@@ -107,6 +126,7 @@ class Parser
         }
 
         $pattern['sprintf'] = $sprintf;
+        $pattern['regex'] = '^'.$regex.'$';
 
         return $pattern;
     }
@@ -123,9 +143,7 @@ class Parser
 
             switch ($child->nodeName) {
                 case 'router':
-                    $subRouter = new Router();
-                    $router->append($subRouter);
-                    $this->controlParse($child, $subRouter);
+                    $this->controlParse($child, $router);
                     break;
                 
                 case 'block':
@@ -220,10 +238,22 @@ class Parser
                     } else {
                         $path = new Path;
                     }
+
                     $path->setPattern($pattern);
                     $path->setName($id);
+
+                    // check for conflicting routes
+                    $tmp = $path->getPattern();
+                    if ($path instanceof Path)
+                        foreach ($router->children as $c) {
+                            if ($c->getType() !== Element::TYPE_PATH) continue;
+                            if ($c->getPattern() === $tmp)
+                                throw new \InvalidArgumentException("There are two paths with string '$tmp'");
+                        }
+
                     $router->append($path);
                     $this->controlParse($child, $path);
+
 
                     if ($id !== '') {
                         $path->addRoute();
@@ -291,10 +321,10 @@ class Parser
         fwrite($fp, "        \$this->serverRequest['CURRENT_URL_ENCODED'] = \\rawurlencode(\$this->serverRequest['CURRENT_URL']);\n");
         fwrite($fp, "        \$path = \$request['REQUEST_URI'] ?? \$request['PATH_INFO'] ?? '';\n");
         fwrite($fp, "        \$this->url = parse_url(\$path);\n");
-        fwrite($fp, "        \$pathinfo = \pathinfo(\$this->url['path']);\n");
-        fwrite($fp, "        if (isset(\$pathinfo['extension']) && strlen(\$pathinfo['extension'])) {\n");
-        fwrite($fp, "            \$this->url['path'] = \substr(\$this->url['path'], 0, \strlen(\$this->url['path'])-\strlen(\$pathinfo['extension'])-1);\n");
-        fwrite($fp, "        }\n");
+        // fwrite($fp, "        \$pathinfo = \pathinfo(\$this->url['path']);\n");
+        // fwrite($fp, "        if (isset(\$pathinfo['extension']) && strlen(\$pathinfo['extension'])) {\n");
+        // fwrite($fp, "            \$this->url['path'] = \substr(\$this->url['path'], 0, \strlen(\$this->url['path'])-\strlen(\$pathinfo['extension'])-1);\n");
+        // fwrite($fp, "        }\n");
         fwrite($fp, "        \$segments = [];\n");
         fwrite($fp, "        foreach (explode('/', \$this->url['path']) as \$p) if (strlen(\$p)) \$segments[] = \$p;\n");
 

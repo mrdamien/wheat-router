@@ -6,22 +6,8 @@ use Wheat\Router\Config;
 
 class RouterTest extends \PHPUnit\Framework\TestCase
 {
-
-
-    // public static function setUpBeforeClass(){
-    //     @unlink(__DIR__.'/basic.php');
-    //     @unlink(__DIR__.'/regex.php');
-    //     @unlink(__DIR__.'/comprehensive.php');
-    //     @unlink(__DIR__.'/include.php');
-    //     @unlink(__DIR__.'/tester.php');
-    // }
-
     public static function tearDownAfterClass(){
         @unlink(__DIR__.'/basic.php');
-        @unlink(__DIR__.'/regex.php');
-        @unlink(__DIR__.'/comprehensive.php');
-        @unlink(__DIR__.'/include.php');
-        @unlink(__DIR__.'/tester.php');
     }
 
     public function basicProvider ()

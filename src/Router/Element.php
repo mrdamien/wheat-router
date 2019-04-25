@@ -37,6 +37,7 @@ abstract class Element
     const TYPE_PATH       = 'path';
     const TYPE_REGEX_PATH = 'regex_path';
     const TYPE_BLANK_PATH = 'blank_path';
+    const TYPE_RETURN     = 'return';
 
     const NEXT_SEGMENT = 'NEXT_SEGMENT';
     const PREV_SEGMENT = 'PREV_SEGMENT';
@@ -210,6 +211,14 @@ abstract class Element
 
     public function toCode ()
     {
+
+        foreach ($this->children as $child) {
+            if (!in_array($child->getType(), [self::TYPE_PATH, self::TYPE_BLANK_PATH, self::TYPE_REGEX_PATH, self::TYPE_RETURN])) {
+                yield from $child->toCode();
+            }
+        }
+
+
         $regexPaths = [];
         $stringPaths = [];
         if (count($this->values)) {
@@ -240,7 +249,7 @@ abstract class Element
         
         $regexChilds = [];
         $regexStrings = [];
-        $regex = '/^(?';
+        $regex = '/(?';
         $namedSegmentsCache = [];
         $namedSegments = [];
         while(\count($regexPaths) > 0) {
@@ -254,12 +263,12 @@ abstract class Element
             $regex .= '|'.$child->getPattern().'(*:'.$markId.')';
 
             if (strlen($regex) >= self::REGEX_MAX_SIZE || count($regexPaths) === 0) {
-                $regex .= ')$/';
+                $regex .= ')/';
                 $regexStrings[$offset] = $regex;
                 $offset++;
                 $namedSegments[] = $namedSegmentsCache;
                 $namedSegmentsCache = [];
-                $regex = '/^(?';
+                $regex = '/(?';
             }
         }
 
@@ -281,12 +290,12 @@ abstract class Element
             yield '}';
         }
 
-
         foreach ($this->children as $child) {
-            if (!in_array($child->getType(), [self::TYPE_PATH, self::TYPE_BLANK_PATH, self::TYPE_REGEX_PATH])) {
+            if (in_array($child->getType(), [self::TYPE_RETURN])) {
                 yield from $child->toCode();
             }
         }
+
         // yield static::class. "\n";
     }
 

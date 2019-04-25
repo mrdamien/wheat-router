@@ -8,7 +8,7 @@ class ComprehensiveTest extends \PHPUnit\Framework\TestCase
 {
 
     public static function tearDownAfterClass(){
-        @unlink(__DIR__.'/comprehensive.php');
+        // @unlink(__DIR__.'/comprehensive.php');
     }
 
     public function comprehensiveProvider ()
@@ -56,6 +56,16 @@ class ComprehensiveTest extends \PHPUnit\Framework\TestCase
                 [
                     'file' => 'upgrade.php',
                     'code' => '301',
+                ]
+            ],
+            [
+                'GET',
+                1,
+                'https://test.com/geo_12.345_67.89',
+                [
+                    'code' => '200',
+                    'lat' => '12.345',
+                    'long' => '67.89'
                 ]
             ]
         ];

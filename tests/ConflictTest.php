@@ -11,14 +11,13 @@ class ConflictTest extends \PHPUnit\Framework\TestCase
 
     public function testConflict ()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $router = \Wheat\Router::make([
             'configFile' => __DIR__.'/conflict.xml',
             'cacheFile' => [__DIR__.'/include.php', __DIR__.'/tester.php'],
             'regenCache' => true,
         ]);
-        exit;
     }
 
     public function testNoConflict ()

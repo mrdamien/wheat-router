@@ -54,7 +54,6 @@
     </test>
 
     <set name="value" />
-
     <test subject="{HTTP_HOST}" pattern="/api.example.com/">
         <ref name="disallowHotlink" />
 
@@ -92,13 +91,13 @@
     -->
     <path pattern="forum" id="ForumIndex">
         <!--
-        public function urlForumId($forum_id, array $get = []): string;
+        public function urlForumId(int $forum_id): string;
         $router->urlForumId(1); // '/forum/1'
         -->
         <path pattern="{forum_id:\d+:int}" id="ForumId">
             <!-- 
-            public function urlForumThreadId ($forum_id, $thread_id, array $get = []): string;
-            $router->urlForumThreadId(3, 14, ['foo'=>'b ar']); // '/forum/3/14?foo=b%20ar'
+            public function urlForumThreadId (int $forum_id, int $thread_id): string;
+            $router->urlForumThreadId(3, 14); // '/forum/3/14
             -->
             <path pattern="{thread_id:\d+:int}" id="ForumThreadId">
                 <return file="thread.php" thread_id="{thread_id}" />
@@ -146,6 +145,11 @@
         </path>
 
         <return file="thread.php" forum_id="{forum_id}" thread_id="{thread_id}" />
+    </path>
+
+
+    <path pattern="geo_{lat:float:floatval}_{long:float:floatval}" id="geo">
+        <return lat="{lat}" long="{long}" />
     </path>
 
 </router>
