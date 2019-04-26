@@ -8,7 +8,7 @@ class ComprehensiveTest extends \PHPUnit\Framework\TestCase
 {
 
     public static function tearDownAfterClass(){
-        // @unlink(__DIR__.'/comprehensive.php');
+        @unlink(__DIR__.'/comprehensive.php');
     }
 
     public function comprehensiveProvider ()
@@ -65,7 +65,9 @@ class ComprehensiveTest extends \PHPUnit\Framework\TestCase
                 [
                     'code' => '200',
                     'lat' => '12.345',
-                    'long' => '67.89'
+                    'long' => '67.89',
+                    'dude' => 'wheres my car?',
+                    "brace" => "{"
                 ]
             ]
         ];

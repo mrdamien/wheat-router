@@ -149,7 +149,7 @@
 
 
     <path pattern="geo_{lat:float:floatval}_{long:float:floatval}" id="geo">
-        <return lat="{lat}" long="{long}" />
+        <return lat="{lat}" long="{long}" dude="wheres my car?" brace="{" />
     </path>
 
 </router>

@@ -54,10 +54,6 @@ class Router extends Element
             }
         }
 
-        if ($this->getParent()) {
-            return $this->getParent()->getRouter()->getBlock($name);
-        }
-
         throw new \Exception(sprintf("No block named '%s' was found in scope", htmlentities($name)));
     }
 

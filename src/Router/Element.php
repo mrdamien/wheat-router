@@ -156,36 +156,31 @@ abstract class Element
             case 'null': return 'null';
             case 'false': return 'false';
         }
-        if (strlen($key) < 2) {
-            return var_export($key, true);
+
+        $index = substr($key, 1, strlen($key)-2);
+
+        // handle cases like: {variable:strtolower:ucfirst}
+        $fnStr = '';
+        $fnStrEnd = '';
+        $functions = \explode(':', $index);
+
+        while (count($functions) > 1) {
+            [$fn] = array_splice($functions, 1, 1);
+            $fnStr = $fn . '(' . $fnStr;
+            $fnStrEnd .= ')';
         }
-        if ($key[0] === "{" && $key[-1] === "}") {
-            $index = substr($key, 1, strlen($key)-2);
+        $index = $functions[0];
 
-            // handle cases like: {variable:strtolower:ucfirst}
-            $fnStr = '';
-            $fnStrEnd = '';
-            $functions = \explode(':', $index);
-
-            while (count($functions) > 1) {
-                [$fn] = array_splice($functions, 1, 1);
-                $fnStr = $fn . '(' . $fnStr;
-                $fnStrEnd .= ')';
-            }
-            $index = $functions[0];
-
-            $code = [];
-            $parent = $this;
-            $vars = $this->getVars();
-            foreach ($vars as $var) {
-                $code[] = '$'.$var.'[\''.$index.'\']';
-            }
-            $code[] = '$get'."['" . $index . "']";
-            $code[] = '$this->serverRequest'."['" . $index . "']";
-            $code[] = '""';
-            return $fnStr . '('.implode(" ?? ", $code).')' . $fnStrEnd;
+        $code = [];
+        $parent = $this;
+        $vars = $this->getVars();
+        foreach ($vars as $var) {
+            $code[] = '$'.$var.'[\''.$index.'\']';
         }
-        return var_export($key, true);
+        $code[] = '$get'."['" . $index . "']";
+        $code[] = '$this->serverRequest'."['" . $index . "']";
+        $code[] = '""';
+        return $fnStr . '('.implode(" ?? ", $code).')' . $fnStrEnd;
     }
 
     public function interpretString (string $string)
@@ -194,7 +189,7 @@ abstract class Element
 
         for ($i=0; $i<count($vars); $i++) {
             $advance = false;
-            if (!empty($vars[$i]) && $vars[$i][0] === '{') {
+            if (!empty($vars[$i]) && $vars[$i][0] === '{' && $vars[$i][-1] === '}') {
                 $advance = strpos($vars[$i], ':');
                 $vars[$i] = $this->interpret($vars[$i]);
 
