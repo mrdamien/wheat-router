@@ -150,7 +150,7 @@ class Parser
                     $block = new Block;
                     $block->setName((string)$child->attributes->getNamedItem('name')->value);
                     $this->controlParse($child, $block);
-                    $router->appendBlock($block);
+                    $router->getRouter()->appendBlock($block);
                     break;
                 
                 case 'ref':
@@ -317,8 +317,6 @@ class Parser
         fwrite($fp, "    {\n");
         fwrite($fp, "        if (\$get === null) \$get = \$_GET;\n");
         fwrite($fp, "        \$this->serverRequest = \$request;\n");
-        fwrite($fp, "        \$this->serverRequest['CURRENT_URL'] = sprintf('%s://%s%s', \$request['HTTP_SCHEME']??'', \$request['HTTP_HOST']??'', \$request['REQUEST_URI']??'');\n");
-        fwrite($fp, "        \$this->serverRequest['CURRENT_URL_ENCODED'] = \\rawurlencode(\$this->serverRequest['CURRENT_URL']);\n");
         fwrite($fp, "        \$path = \$request['REQUEST_URI'] ?? \$request['PATH_INFO'] ?? '';\n");
         fwrite($fp, "        \$this->url = parse_url(\$path);\n");
         // fwrite($fp, "        \$pathinfo = \pathinfo(\$this->url['path']);\n");
