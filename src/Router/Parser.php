@@ -54,6 +54,7 @@ class Parser
 
     private $root;
     private $addMethods = [];
+    private $sprintfs = [];
 
     const FN_NAME_REGEX = '/^(\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)+$/';
 
@@ -256,7 +257,8 @@ class Parser
 
 
                     if ($id !== '') {
-                        $path->addRoute();
+                        [$name, $format] = $path->getRoute();
+                        $this->sprintfs[$name] = $format;
                         $this->addMethods[] = $path;
                     }
                     break;
@@ -302,7 +304,7 @@ class Parser
         fwrite($fp, "    private \$url, \$serverRequest;\n");
         self::$preOne = self::$preTwo;
         
-        fwrite($fp, "    public \$routes = ".var_export($syntax->sprintfs, true).";\n");
+        fwrite($fp, "    public \$routes = ".var_export($this->sprintfs, true).";\n");
 
         foreach ($syntax->sprintfs as $id=>$route) {
             fwrite($fp, "    const $id = \"$route\";\n");

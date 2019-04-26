@@ -114,7 +114,7 @@ class Path extends Element
         );
     }
 
-    public function addRoute ()
+    public function getRoute ()
     {
         $paths = [];
         $parent = $this;
@@ -130,8 +130,7 @@ class Path extends Element
             $sprintf[] = $path->getSprintf();
         }
         $sprintf = '/'.\implode('/', $sprintf);
-        $parent->addSprintfRoute($this->getName(), $sprintf);
-
+        return [$this->getName(), $sprintf];
     }
     
     public function toCode ()
