@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<grammar
-    xmlns="http://relaxng.org/ns/structure/1.0"
-    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
 
     <start>
         <ref name="router" />
@@ -40,12 +38,37 @@
     <define name="router">
         <element name="router">
             <optional>
-                <attribute name="xml:base" />
+                <attribute name="xml:base">
+                    <data type="string" />
+                </attribute>
             </optional>
             <interleave>
-                <ref name="anyElement" />
+                <zeroOrMore>
+                    <ref name="router" />
+                </zeroOrMore>
                 <zeroOrMore>
                     <ref name="block" />
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="path" />
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="switch" />
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="test" />
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="call" />
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="return" />
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="ref" />
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="assignment" />
                 </zeroOrMore>
             </interleave>
         </element>
@@ -54,7 +77,6 @@
     <define name="ref">
         <element name="ref">
             <attribute name="name" />
-            <!-- <attribute name="value" /> -->
         </element>
     </define>
 
@@ -101,9 +123,7 @@
                     </data>
                 </attribute>
             </optional>
-            <optional>
-                <ref name="anyElement" />
-            </optional>
+            <ref name="anyElement" />
         </element>
     </define>
 
