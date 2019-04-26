@@ -262,17 +262,82 @@ public function urlTwo ($forum_id, int $two): string;
 public function urlThree ($forum_id, int $two, $three): string;
 ```
 ## Speed
-Speed is pretty good. There is an example benchmark in that folder. xdebug off before benchmarking.
+Speed is good. Example benchmark: 200k hits per second. xdebug off before benchmarking.
+
+```php
+<?php
+include 'vendor/autoload.php';
+$nMatches = 200000;
+
+$router = \Wheat\Router::make([
+    'configFile' => __DIR__ . '/tests/benchmark.xml',
+    'regenCache' => true
+]);
+
+echo 'first: ', (function() use ($router, $nMatches) {
+    $start = microtime(true);
+    for ($i=0; $i<$nMatches; $i++) {
+        $router->route([
+            'PATH_INFO' => '/a/foo'
+        ]);
+    }
+    $end = microtime(true);
+
+    return sprintf(
+        'Time: %12fs'."\n",
+        ($end - $start)
+    );
+})();
+
+echo 'cv: ', (function() use ($router, $nMatches) {
+    $start = microtime(true);
+    for ($i=0; $i<$nMatches; $i++) {
+        $router->route([
+            'PATH_INFO' => '/cv/foo'
+        ]);
+    }
+    $end = microtime(true);
+
+    return sprintf(
+        'Time: %12fs'."\n",
+        ($end - $start)
+    );
+})();
+
+echo 'node: ', (function() use ($router, $nMatches) {
+    $start = microtime(true);
+    for ($i=0; $i<$nMatches; $i++) {
+        $router->route([
+            'PATH_INFO' => '/node/1'
+        ]);
+    }
+    $end = microtime(true);
+
+    return sprintf(
+        'Time: %12fs'."\n",
+        ($end - $start)
+    );
+})();
+
+echo 'unknown: ', (function() use ($router, $nMatches) {
+    $start = microtime(true);
+    for ($i=0; $i<$nMatches; $i++) {
+        $router->route([
+            'PATH_INFO' => '/foobar/foo'
+        ]);
+    }
+    $end = microtime(true);
+
+    return sprintf(
+        'Time: %12fs'."\n",
+        ($end - $start)
+    );
+})();
 ```
-.../router/benchmark$ php reddit.php 12500
-n:          12500
-Homepage:   0.046115 s
-lastReddit: 0.052861 s
-User:       0.073144 s
-Post:       0.077587 s
-404:        0.058778 s
-/j/k        0.053539 s
-/j_0/k_9    0.086541 s
-rss:        0.078591 s
-Total:      100000 reqs in 0.527156 s
+
+```
+first: Time:     0.892758s
+cv: Time:        0.966486s
+node: Time:      0.975321s
+unknown: Time:   0.966569s
 ```
