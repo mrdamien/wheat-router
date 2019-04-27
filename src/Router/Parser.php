@@ -320,13 +320,12 @@ class Parser
         fwrite($fp, "        if (\$get === null) \$get = \$_GET;\n");
         fwrite($fp, "        \$this->serverRequest = \$request;\n");
         fwrite($fp, "        \$path = \$request['REQUEST_URI'] ?? \$request['PATH_INFO'] ?? '';\n");
-        fwrite($fp, "        \$this->url = parse_url(\$path);\n");
-        // fwrite($fp, "        \$pathinfo = \pathinfo(\$this->url['path']);\n");
-        // fwrite($fp, "        if (isset(\$pathinfo['extension']) && strlen(\$pathinfo['extension'])) {\n");
-        // fwrite($fp, "            \$this->url['path'] = \substr(\$this->url['path'], 0, \strlen(\$this->url['path'])-\strlen(\$pathinfo['extension'])-1);\n");
-        // fwrite($fp, "        }\n");
+        fwrite($fp, "        \$url = parse_url(\$path);\n");
+        fwrite($fp, "        foreach (\$url as \$k=>\$v) \$this->serverRequest[\$k] = '\$v';\n");
+        fwrite($fp, "        \$pathinfo = \pathinfo(\$url['path']);");
+        fwrite($fp, "        \$this->serverRequest['extension'] = \$pathinfo['extension'] ?? '';\n");
         fwrite($fp, "        \$segments = [];\n");
-        fwrite($fp, "        foreach (explode('/', \$this->url['path']) as \$p) if (strlen(\$p)) \$segments[] = \$p;\n");
+        fwrite($fp, "        foreach (explode('/', \$url['path']) as \$p) if (strlen(\$p)) \$segments[] = \$p;\n");
 
 
         $code = $syntax->toCode();
