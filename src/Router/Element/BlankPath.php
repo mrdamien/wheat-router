@@ -48,6 +48,4 @@ class BlankPath extends Path
     {
         return self::TYPE_PATH;
     }
-    
-    public function getRoute () {}
 }
