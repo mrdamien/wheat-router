@@ -1,3 +1,12 @@
+- [Example](#Simple\ example)
+- [Patterns](#Patterns)
+- [Optional Patterns](#Optional\ Patterns)
+- [String Interpretation](#String\ Interpretation)
+- [Conditionals](#Conditionals)
+- [Subroutines](#Subroutines)
+- [Includes](#Includes)
+
+
 # Wheat/Route - An XML/PHP metaprogramming router
 
 Goals
@@ -5,7 +14,7 @@ Goals
 * Composability
 * Speed
 
-## Simplest example:
+## Simple example:
 
 router.xml
 ```xml 
@@ -71,12 +80,29 @@ When a &lt;return /&gt; element is reached, the attributes are returned as key=>
 
 ## Patterns
 
-Patterns are surrounded by curly braces, and have a few modifiers:
+Patterns are surrounded by curly braces.
 
 - A name, which must come first: {foobar}
-- A regex pattern can be specified, like: \d+
-- Types can be 'int' or 'float' or 'string', or not specified (string).
-- A series of functions that can be used to sanitize/format URLS. /the-quick-brown-fox -> {title:strtoupper} -> THE-QUICK-BROWN-FOX. More on this later.
+- A regex pattern like: \d+ If no pattern is specified, ".+" is used.
+- Types can be 'int' or 'float' or 'string', or not specified (string). Int and float change the regex to match integers/floats respectively.
+
+## Optional patterns
+
+Optional Patterns are surrounded by square braces.
+
+For example:
+
+cat[ext:\.\w+] matches things like "cat.jpg" "cat.html" and "cat".
+
+Capturing groups () cannot be used in either required nor optional patterns.
+
+## String Interpretation
+
+Strings are interpreted. `foo_{bar}` is equivalent to `foo_{$bar}` in PHP.
+
+A series of functions that can be used to sanitize/format those variables.
+
+/the-quick-brown-fox -> {title:strtoupper} -> THE-QUICK-BROWN-FOX. More on this later.
 
     {foobar:\d+:int:intval}
     Name: foobar
@@ -90,6 +116,7 @@ Patterns are surrounded by curly braces, and have a few modifiers:
     Type: string
     Functions: \my_ns\to_url_slug()
 
+
 ## Conditionals
 Do something if subject matches pattern, like enforce HTTPS
 ```xml
@@ -98,8 +125,16 @@ Do something if subject matches pattern, like enforce HTTPS
 </test>
 ```
 
-## Global variables
-Declare and assign a value to a variable for later use.
+## Variables
+
+Named patterns are assigned to variables. 
+ex:
+
+    `/john`    -> <path pattern="{name}">
+    "{name}"   -> "john"
+
+Variables can also be created manually:
+
 ```xml
 <test subject="{PATH_INFO}" pattern="/\.json$/">
     <set format="json" />
@@ -115,7 +150,7 @@ Declare a set of instructions that can be included later.
 ```xml
 <block name="requireLogin">
     <switch>
-        <value><call>User::isLoggedIn</call></value>
+        <value><call function="User::isLoggedIn"></call></value>
         <case value="false">
             <return code="302" location="https://loginUrl"  />
         </case>
@@ -274,7 +309,7 @@ $router = \Wheat\Router::make([
     'regenCache' => true
 ]);
 
-echo 'first: ', (function() use ($router, $nMatches) {
+echo 'first:   ', (function() use ($router, $nMatches) {
     $start = microtime(true);
     for ($i=0; $i<$nMatches; $i++) {
         $router->route([
@@ -289,7 +324,7 @@ echo 'first: ', (function() use ($router, $nMatches) {
     );
 })();
 
-echo 'cv: ', (function() use ($router, $nMatches) {
+echo 'cv:      ', (function() use ($router, $nMatches) {
     $start = microtime(true);
     for ($i=0; $i<$nMatches; $i++) {
         $router->route([
@@ -304,7 +339,7 @@ echo 'cv: ', (function() use ($router, $nMatches) {
     );
 })();
 
-echo 'node: ', (function() use ($router, $nMatches) {
+echo 'node:    ', (function() use ($router, $nMatches) {
     $start = microtime(true);
     for ($i=0; $i<$nMatches; $i++) {
         $router->route([
@@ -336,8 +371,8 @@ echo 'unknown: ', (function() use ($router, $nMatches) {
 ```
 
 ```
-first: Time:     0.892758s
-cv: Time:        0.966486s
-node: Time:      0.975321s
-unknown: Time:   0.966569s
+first:   Time:     0.906898s
+cv:      Time:     0.852843s
+node:    Time:     0.834878s
+unknown: Time:     0.872268s
 ```
