@@ -58,7 +58,7 @@ class Path extends Element
         // foreach ($this->parameters as $param) {
         // }
         $pattern = \preg_replace('/{\w+([^}]*?)}/', '%s', $pattern);
-        $pattern = \preg_replace('/\[\w+([^}]*?)\]/', '%s', $pattern);
+        $pattern = \preg_replace('/\[\w+([^}]*?)\]/', '', $pattern);
 
         return $pattern;
     }
