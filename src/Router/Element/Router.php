@@ -29,6 +29,8 @@ use Wheat\Router\Element;
 
 class Router extends Element
 {
+    public $sprintfs = [];
+
     /**
      * @var Block[]
      */
@@ -55,12 +57,5 @@ class Router extends Element
         }
 
         throw new \Exception(sprintf("No block named '%s' was found in scope", htmlentities($name)));
-    }
-
-    public $sprintfs = [];
-
-    public function addSprintfRoute ($name, $pattern)
-    {
-        $this->sprintfs[$name] = $pattern;
     }
 }

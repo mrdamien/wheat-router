@@ -77,13 +77,16 @@ class Parser
             'types' => [],
             'functions' => [],
             'sprintf' => '',
-            'regex' => ''
+            'regex' => '',
+            'blank' => []
         ];
 
         \preg_match_all('/{\w+(:[^}]+)?}/', $s, $matches);
+        \preg_match_all('/\[\w+(:[^\]]+)?\]/', $s, $optionals);
 
         $sprintf = $s;
         $regex = $s;
+
         foreach ($matches[0] as $argument) {
             $originalArg = $argument;
             $sprintf = \str_replace($originalArg, '%s', $sprintf);
@@ -119,11 +122,49 @@ class Parser
 
             // $regex = str_replace($matches[0][0], '(?<'.$name.'>'.$r.')', $regex);
             $regex = str_replace($originalArg, '('.$r.')', $regex);
-            
 
             $pattern['types'][] = $type;
             $pattern['functions'][] = $functions;
+        }
+
+        foreach ($optionals[0] as $argument) {
+            $originalArg = $argument;
+            $sprintf = \str_replace($originalArg, '%s', $sprintf);
+            $argument = \trim($argument, '[]');
+            $argumentParts = \explode(':', $argument);
+
+            $functions = [];
+            $pattern['names'][] = $name = array_shift($argumentParts);
+            $pattern['blank'][$name] = true;
             
+            $type = "string";
+            $r = null;
+
+            foreach ($argumentParts as $i=>$part) {
+                switch ($part) {
+                    case 'int':
+                        $r = self::INT_REGEX;
+                        $type = "int";
+                        break;
+                    case 'float':
+                        $r = self::FLOAT_REGEX;
+                        $type = "float";
+                        break;
+                }
+
+                if (\preg_match(self::FN_NAME_REGEX, $part)) {
+                    $functions[] = $part;
+                } else {
+                    $r = $part;
+                }
+            }
+
+            if ($r === null) $r = '.+';
+            
+            $regex = str_replace($originalArg, '('.$r.')?', $regex);
+
+            $pattern['types'][] = $type;
+            $pattern['functions'][] = $functions;
         }
 
         $pattern['sprintf'] = $sprintf;
@@ -234,7 +275,7 @@ class Parser
 
                     if ($pattern === '') {
                         $path = new BlankPath;
-                    } else if (preg_match_all('/({(?<name>[^:}]+?)(:(?<regex>(.+?)))?})/', $pattern)) {
+                    } else if (preg_match_all('/(\{.*\})|(\[.*\])/', $pattern)) {
                         $path = new RegexPath;
                     } else {
                         $path = new Path;

@@ -116,15 +116,15 @@
         public function urlAboutJohn(): string;
         $router->urlAboutJohn(); // '/about/john'
         -->
-        <path pattern="john" id="AboutJohn">
-            <return file="john.php" />
+        <path pattern="john[ext:.\w+]" id="AboutJohn">
+            <return file="john.php" ext="{ext}" />
         </path>
 
         <!--
         public function urlAboutJane(): string;
         $router->urlAboutJane(); // '/about/jane'
         -->
-        <path pattern="jane" id="AboutJane">
+        <path pattern="jane[ext:.\w+]" id="AboutJane">
             <return file="jane.php" />
         </path>
     </path>

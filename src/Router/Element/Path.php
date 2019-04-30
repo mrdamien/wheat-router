@@ -58,6 +58,7 @@ class Path extends Element
         // foreach ($this->parameters as $param) {
         // }
         $pattern = \preg_replace('/{\w+([^}]*?)}/', '%s', $pattern);
+        $pattern = \preg_replace('/\[\w+([^}]*?)\]/', '%s', $pattern);
 
         return $pattern;
     }
@@ -90,7 +91,7 @@ class Path extends Element
 
                 $fn_pre = count($parsed['functions'][$i]) > 0 ? implode('(', $parsed['functions'][$i]) . '(' : '\rawurlencode(';
                 $fn_post = count($parsed['functions'][$i]) > 0 ? str_repeat(')', count($parsed['functions'][$i])) : ')';
-                $params[] = $parsed['types'][$i] . ' $'.$name;
+                $params[] = $parsed['types'][$i] . ' $'.$name . (isset($parsed['blank'][$name]) ? ' = ""' : '');
                 $args[] = $fn_pre . '$'.$name . $fn_post;
             }
             $j++;

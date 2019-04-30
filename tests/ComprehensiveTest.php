@@ -69,6 +69,26 @@ class ComprehensiveTest extends \PHPUnit\Framework\TestCase
                     'dude' => 'wheres my car?',
                     "brace" => "{"
                 ]
+            ],
+            [
+                'GET',
+                1,
+                'https://example.com/about/john.html',
+                [
+                    'code' => '200',
+                    'file' => "john.php",
+                    'ext' => ".html"
+                ]
+            ],
+            [
+                'GET',
+                1,
+                'https://example.com/about/john',
+                [
+                    'code' => '200',
+                    'file' => "john.php",
+                    'ext' => ""
+                ]
             ]
         ];
     }
@@ -82,7 +102,7 @@ class ComprehensiveTest extends \PHPUnit\Framework\TestCase
     {
         $router = \Wheat\Router::make([
             'configFile' => __DIR__ . '/comprehensive.xml',
-            'cacheFile' => [__DIR__.'/temp.php', __DIR__.'/tester.php'],
+            'cacheFile' => [__DIR__.'/comprehensive.php', __DIR__.'/tester.php'],
             'regenCache' => true,
         ]);
         $path = \parse_url($path);

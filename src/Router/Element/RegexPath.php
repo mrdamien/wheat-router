@@ -50,6 +50,12 @@ class RegexPath extends Path
         foreach ($matches['name'] as $i=>$name) {
             $segments[$name] = $i+1;
         }
+
+        preg_match_all('/(\[(?<name>[^:}]+?)(:(?<regex>(.+?)))\])/', $this->pattern, $matches);
+        $i = 0;
+        foreach ($matches['name'] as $i=>$name) {
+            $segments[$name] = $i+1;
+        }
         return $segments;
     }
     
