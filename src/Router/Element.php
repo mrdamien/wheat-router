@@ -151,12 +151,6 @@ abstract class Element
      */
     public function interpret (string $key): string
     {
-        switch ($key) {
-            case 'true': return 'true';
-            case 'null': return 'null';
-            case 'false': return 'false';
-        }
-
         $index = substr($key, 1, strlen($key)-2);
 
         // handle cases like: {variable:strtolower:ucfirst}
@@ -185,6 +179,12 @@ abstract class Element
 
     public function interpretString (string $string)
     {
+        switch ($string) {
+            case 'true': return 'true';
+            case 'null': return 'null';
+            case 'false': return 'false';
+        }
+
         $vars = preg_split('/({[a-z0-9_]+(:[a-z0-9_\\\]+)*})/i', $string,  -1, \PREG_SPLIT_DELIM_CAPTURE);
 
         for ($i=0; $i<count($vars); $i++) {
