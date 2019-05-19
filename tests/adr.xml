@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <router xmlns:xi="http://www.w3.org/2001/XInclude">
 
+    <path pattern="assets">
+        <return remainder="{path_remaining}" />
+    </path>
 
     <path pattern="{domain:\w+}">
         <path pattern="{action:[a-z]+}">

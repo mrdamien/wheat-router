@@ -356,6 +356,14 @@ class Parser
         }
 
         fwrite($fp, "\n");
+        fwrite($fp, "    public function path_remaining (array \$segments, int \$offset): string\n");
+        fwrite($fp, "    {\n");
+        fwrite($fp, "        \$parts = \array_slice(\$segments, \$offset-1);\n");
+        fwrite($fp, "        return count(\$parts) > 0\n");
+        fwrite($fp, "            ? \implode('/', ['']+\$parts)\n");
+        fwrite($fp, "            : '';\n");
+        fwrite($fp, "    }\n");
+        fwrite($fp, "\n");
         fwrite($fp, "    public function route (array \$request, ?array \$get = null): array\n");
         fwrite($fp, "    {\n");
         fwrite($fp, "        if (\$get === null) \$get = \$_GET;\n");
@@ -373,6 +381,7 @@ class Parser
         $indent = 2;
         $segment = 0;
         fwrite($fp, $this->indent('$segment = $segments['. $segment. "] ?? null;", $indent));
+        fwrite($fp, $this->indent('$segment_offset = '. $segment. ";", $indent));
         $segment++;
 
         foreach ($code as $c) {
@@ -386,12 +395,14 @@ class Parser
             
                 case Element::NEXT_SEGMENT:
                     fwrite($fp, $this->indent('$segment = $segments['. $segment. "] ?? null;", $indent));
+                    fwrite($fp, $this->indent('$segment_offset = '. $segment. ";", $indent));
                     $segment++;
                     break;
         
                 case Element::PREV_SEGMENT:
                     $segment--;
                     fwrite($fp, $this->indent('$segment = $segments['. $segment. "] ?? null;", $indent));
+                    fwrite($fp, $this->indent('$segment_offset = '. $segment. ";", $indent));
                     break;
                     
                 default:

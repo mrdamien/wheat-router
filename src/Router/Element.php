@@ -183,6 +183,9 @@ abstract class Element
             case 'true': return 'true';
             case 'null': return 'null';
             case 'false': return 'false';
+            case '{path_remaining}':
+                return '$this->path_remaining($segments, $segment_offset)';
+            break;
         }
 
         $vars = preg_split('/({[a-z0-9_]+(:[a-z0-9_\\\]+)*})/i', $string,  -1, \PREG_SPLIT_DELIM_CAPTURE);

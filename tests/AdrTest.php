@@ -67,6 +67,18 @@ class AdrTest extends \PHPUnit\Framework\TestCase
             $result
         );
 
+        $result = $router->route([
+            'HTTP_METHOD' => 'GET', 
+            'REQUEST_URI' => '/assets/foo/bar/cat.jpg'
+        ]);
+        $this->assertEquals(
+            [
+                'code' => '200',
+                'remainder' => '/foo/bar/cat.jpg'
+            ],
+            $result
+        );
+
         
     }
 }

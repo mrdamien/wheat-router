@@ -376,3 +376,36 @@ cv:      Time:     0.852843s
 node:    Time:     0.834878s
 unknown: Time:     0.872268s
 ```
+
+## Special variables
+
+### {path_remainder}
+Identifies the remaining non-matched path.
+
+```
+/foo/bar/dog/cat
+<path>
+    <!-- {path_remainder}: /foo/bar/dog/cat -->
+    <path pattern="foo">
+        <!-- {path_remainder}: /bar/dog/cat -->
+
+        <path pattern="bar">
+            <!-- {path_remainder}: /dog/cat -->
+
+            <path pattern="dog">
+                <!-- {path_remainder}: /cat -->
+
+                <path pattern="{animal}">
+                    <!-- {path_remainder}:  -->
+
+                </path>
+                <path pattern="cat">
+                    <!-- {path_remainder}:  -->
+
+                </path>
+            </path>
+        </path>
+    </path>
+
+</path>
+```
