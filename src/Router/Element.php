@@ -166,14 +166,23 @@ abstract class Element
         $index = $functions[0];
 
         $code = [];
-        $parent = $this;
-        $vars = $this->getVars();
-        foreach ($vars as $var) {
-            $code[] = '$'.$var.'[\''.$index.'\']';
+
+        switch (\strtolower($index)) {
+            case 'path_remaining':
+                $code[] = '$this->path_remaining($segments, $segment_offset)';
+                break;
+            default:
+                $parent = $this;
+                $vars = $this->getVars();
+                foreach ($vars as $var) {
+                    $code[] = '$'.$var.'[\''.$index.'\']';
+                }
+                $code[] = '$get'."['" . $index . "']";
+                $code[] = '$this->serverRequest'."['" . $index . "']";
+                $code[] = '""';
+                break;
         }
-        $code[] = '$get'."['" . $index . "']";
-        $code[] = '$this->serverRequest'."['" . $index . "']";
-        $code[] = '""';
+
         return $fnStr . '('.implode(" ?? ", $code).')' . $fnStrEnd;
     }
 
@@ -183,9 +192,6 @@ abstract class Element
             case 'true': return 'true';
             case 'null': return 'null';
             case 'false': return 'false';
-            case '{path_remaining}':
-                return '$this->path_remaining($segments, $segment_offset)';
-            break;
         }
 
         $vars = preg_split('/({[a-z0-9_]+(:[a-z0-9_\\\]+)*})/i', $string,  -1, \PREG_SPLIT_DELIM_CAPTURE);
