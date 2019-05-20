@@ -190,9 +190,9 @@ class Parser
                 
                 case 'block':
                     $block = new Block;
+                    $router->getRouter()->appendBlock($block);
                     $block->setName((string)$child->attributes->getNamedItem('name')->value);
                     $this->controlParse($child, $block);
-                    $router->getRouter()->appendBlock($block);
                     break;
                 
                 case 'ref':

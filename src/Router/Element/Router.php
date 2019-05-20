@@ -44,6 +44,7 @@ class Router extends Element
     public function appendBlock (Block $b): Router
     {
         $this->blocks[] = $b;
+        $b->setParent($this);
         return $this;
     }
 
