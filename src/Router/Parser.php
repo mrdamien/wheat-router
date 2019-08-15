@@ -56,6 +56,8 @@ class Parser
     private $addMethods = [];
     private $sprintfs = [];
 
+    private $baseUrl = null;
+
     const FN_NAME_REGEX = '/^(\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)+$/';
 
     public function __construct(\DOMNode $root)
@@ -299,7 +301,7 @@ class Parser
 
                     if ($id !== '') {
                         [$name, $format] = $path->getRoute();
-                        $this->sprintfs[$name] = $format;
+                        $this->sprintfs[$name] = ($this->baseUrl ?? '') . $format;
                         $this->addMethods[] = $path;
                     }
                     break;
@@ -332,7 +334,11 @@ class Parser
      */
     public function outputCode (string $file)
     {
+        $this->baseUrl = $this->root->documentElement->attributes->getNamedItem('baseUrl')
+            ? (string) $this->root->documentElement->attributes->getNamedItem('baseUrl')->value
+            : '';
         $syntax = $this->controlParse($this->root->documentElement);
+
 
         $fp = fopen($file, 'w');
         if ($fp === false) {
@@ -352,7 +358,7 @@ class Parser
         }
 
         foreach ($this->addMethods as $path) {
-            fwrite($fp, $path->addMethod());
+            fwrite($fp, $path->addMethod($this->baseUrl));
         }
 
         fwrite($fp, "\n");

@@ -42,6 +42,11 @@
                     <data type="string" />
                 </attribute>
             </optional>
+            <optional>
+                <attribute name="baseUrl">
+                    <data type="string" />
+                </attribute>
+            </optional>
             <interleave>
                 <zeroOrMore>
                     <ref name="router" />

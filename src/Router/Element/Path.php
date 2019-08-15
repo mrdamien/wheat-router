@@ -59,7 +59,7 @@ class Path extends Element
         return $pattern;
     }
 
-    public function addMethod ()
+    public function addMethod (?string $base)
     {
         $paths = [];
         $parent = $this;
@@ -72,7 +72,7 @@ class Path extends Element
 
         $args = [];
         $params = [];
-        $sprintf = [''];
+        $sprintf = [$base ?? ''];
         // $j counts the path-segments.
         $j = 0;
         $l = count($paths)-1;

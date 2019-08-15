@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<router>
+<router baseUrl="http://localhost">
     <block name="disallowHotlink">
         <test subject="{HTTP_REFERER}" pattern="@^https?://hot-linker.com@">
             <return code="404" />

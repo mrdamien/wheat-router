@@ -153,4 +153,21 @@ class ComprehensiveTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+
+    /**
+     * @return void
+     */
+    public function testGenerateUrl ()
+    {
+        $router = \Wheat\Router::make([
+            'configFile' => __DIR__ . '/comprehensive.xml',
+            'cacheFile' => [__DIR__.'/comprehensive.php', __DIR__.'/tester.php'],
+            'regenCache' => true,
+        ]);
+
+        $route = $router->urlForumIndex();
+
+        $this->assertEquals("http://localhost/forum", $route);
+    }
+
 }
