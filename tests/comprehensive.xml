@@ -6,6 +6,12 @@
         </test>
     </block>
 
+    <var name="secret">
+        <value>
+            <call function="\Wheat\ComprehensiveTest::secret" />
+        </value>
+    </var>
+
     <block name="checkRateLimit">
         <switch>
             <value>
@@ -109,6 +115,10 @@
 
 
         <return file="forum-index.php" />
+    </path>
+
+    <path pattern="secret">
+        <return secret="{secret}" />
     </path>
 
     <path pattern="about">

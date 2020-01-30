@@ -32,6 +32,9 @@
             <zeroOrMore>
                 <ref name="assignment" />
             </zeroOrMore>
+            <zeroOrMore>
+                <ref name="variable" />
+            </zeroOrMore>
         </interleave>
     </define>
 
@@ -44,6 +47,11 @@
             </optional>
             <optional>
                 <attribute name="baseUrl">
+                    <data type="string" />
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="protocol">
                     <data type="string" />
                 </attribute>
             </optional>
@@ -75,6 +83,9 @@
                 <zeroOrMore>
                     <ref name="assignment" />
                 </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="variable" />
+                </zeroOrMore>
             </interleave>
         </element>
     </define>
@@ -92,6 +103,13 @@
                     <anyName />
                 </attribute>
             </oneOrMore>
+        </element>
+    </define>
+
+    <define name="variable">
+        <element name="var">
+            <attribute name="name" />
+            <ref name="value" />
         </element>
     </define>
 
@@ -143,16 +161,20 @@
         </element>
     </define>
 
+    <define name="value">
+        <choice>
+            <element name="value">
+                <data type="string" />
+            </element>
+            <element name="value">
+                <ref name="call" />
+            </element>
+        </choice>
+    </define>
+
     <define name="switch">
         <element name="switch">
-            <choice>
-                <element name="value">
-                    <data type="string" />
-                </element>
-                <element name="value">
-                    <ref name="call" />
-                </element>
-            </choice>
+            <ref name="value" />
             <zeroOrMore>
                 <ref name="case" />
             </zeroOrMore>

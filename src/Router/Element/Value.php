@@ -33,6 +33,12 @@ class Value extends Element
 
     public function toCode ()
     {
-        yield $this->interpretString($this->getValue());
+        if (count($this->children)) {
+            foreach ($this->children as $child) {
+                yield from iterator_to_array($child->toCode());
+            }
+        } else {
+            yield $this->interpretString($this->getValue());
+        }
     }
 }

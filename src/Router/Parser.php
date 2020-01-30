@@ -42,6 +42,7 @@ use Wheat\Router\Element\Block;
 use Wheat\Router\Element\DefaultElement;
 use Wheat\Router\Element\RegexPath;
 use Wheat\Router\Element\BlankPath;
+use Wheat\Router\Element\Variable;
 
 class Parser
 {
@@ -206,6 +207,13 @@ class Parser
                     foreach ($child->attributes as $attr) {
                         $router->setVar((string)$attr->localName, (string)$attr->nodeValue);
                     }
+                    break;
+
+                case 'var':
+                    $var = new Variable;
+                    $var->setName((string)$child->attributes->getNamedItem('name')->value);
+                    $router->append($var);
+                    $this->controlParse($child, $var);
                     break;
 
                 case 'arg':
@@ -377,9 +385,10 @@ class Parser
         fwrite($fp, "        \$path = \$request['REQUEST_URI'] ?? \$request['PATH_INFO'] ?? '';\n");
         fwrite($fp, "        \$url = parse_url(\$path);\n");
         fwrite($fp, "        foreach (\$url as \$k=>\$v) \$this->serverRequest[\$k] = '\$v';\n");
-        fwrite($fp, "        \$pathinfo = \pathinfo(\$url['path']);");
+        fwrite($fp, "        \$pathinfo = \pathinfo(\$url['path']);\n");
         fwrite($fp, "        \$this->serverRequest['extension'] = \$pathinfo['extension'] ?? '';\n");
         fwrite($fp, "        \$segments = [];\n");
+        fwrite($fp, "        \$vars = [];\n");
         fwrite($fp, "        foreach (explode('/', \$url['path']) as \$p) if (strlen(\$p)) \$segments[] = \$p;\n");
 
 

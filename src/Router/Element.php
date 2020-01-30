@@ -178,6 +178,7 @@ abstract class Element
                     $code[] = '$'.$var.'[\''.$index.'\']';
                 }
                 $code[] = '$get'."['" . $index . "']";
+                $code[] = '$vars'."['" . $index . "']";
                 $code[] = '$this->serverRequest'."['" . $index . "']";
                 $code[] = '""';
                 break;

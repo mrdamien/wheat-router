@@ -7,6 +7,11 @@ use Wheat\Router\Config;
 class ComprehensiveTest extends \PHPUnit\Framework\TestCase
 {
 
+    public static function secret (): string
+    {
+        return "quick brown fox";
+    }
+
     public static function tearDownAfterClass(){
         @unlink(__DIR__.'/comprehensive.php');
     }
@@ -170,4 +175,20 @@ class ComprehensiveTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("http://localhost/forum", $route);
     }
 
+
+    public function testSecretVar ()
+    {
+        $router = \Wheat\Router::make([
+            'configFile' => __DIR__ . '/comprehensive.xml',
+            'cacheFile' => [__DIR__.'/comprehensive.php', __DIR__.'/tester.php'],
+            'regenCache' => true,
+        ]);
+
+        $route = $router->route([
+            'HTTP_METHOD' => 'GET',
+            'PATH_INFO' => '/secret'
+        ]);
+
+        $this->assertEquals(self::secret(), $route['secret']);
+    }
 }
