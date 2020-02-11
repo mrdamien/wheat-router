@@ -79,7 +79,7 @@ class Router
             $doc = new \DOMDocument();
             $doc->load($include);
             $ret = self::getIncludes(dirname($include), $doc);
-            if (count($ret)) {array_push($includes, ...$ret);}
+            if (count($ret)) {\array_push($includes, ...$ret);}
         }
 
         return $includes;
@@ -92,17 +92,17 @@ class Router
         $reader->formatOutput = true;
 
         \libxml_clear_errors();
-        $prev = libxml_use_internal_errors(true);
-        $error = set_error_handler(function($err){return $err;});
+        $prev = \libxml_use_internal_errors(true);
+        $error = \set_error_handler(function($err){return $err;});
         $restore = function() use ($prev) {
-            $errors = libxml_get_errors();
+            $errors = \libxml_get_errors();
             \libxml_clear_errors();
-            libxml_use_internal_errors($prev);
-            restore_error_handler();
+            \libxml_use_internal_errors($prev);
+            \restore_error_handler();
             return (array)$errors;
         };
 
-        if (!file_exists($settings['configFile'])) {
+        if (!\file_exists($settings['configFile'])) {
             throw new \Exception("Cannot find configFile");
         }
 
@@ -110,15 +110,15 @@ class Router
             throw new \Exception("Config XML is not valid. ".$settings['configFile'] . var_export($restore, true));
         }
 
-        $filePath = dirname($settings['configFile']);
+        $filePath = \dirname($settings['configFile']);
         $includes = self::getIncludes($filePath, $reader);
-        array_unshift($includes, $settings['configFile']);
+        \array_unshift($includes, $settings['configFile']);
         $reader->xinclude();
 
         if (!$reader->relaxNGValidate(__DIR__.'/Router/schema.xml')) {
             $errors = $restore();
             
-            $errors = array_reduce($errors, function($carry, $item){
+            $errors = \array_reduce($errors, function($carry, $item){
                 return $carry . "\n" . sprintf(
                     "%s[%d,%d] %s - Level: %d, Code: %d",
                     $item->file,
