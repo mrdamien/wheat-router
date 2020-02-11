@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router baseUrl="http://localhost">
+    <var name="foo">
+        <value>
+            <call function="\Wheat\barbar" />
+        </value>
+    </var>
+
+    <path pattern="{any}">
+        <return foo="{foo}" />
+    </path>
+</router>
