@@ -1,7 +1,8 @@
-- [Example](#Simple\ example)
+- [Example](#Simple)
 - [Patterns](#Patterns)
-- [Optional Patterns](#Optional\ Patterns)
-- [String Interpretation](#String\ Interpretation)
+- [Optional Patterns](#Optional_Patterns)
+- [String Interpretation](#String_Interpretation)
+- [Variables](#Variables)
 - [Conditionals](#Conditionals)
 - [Subroutines](#Subroutines)
 - [Includes](#Includes)
@@ -14,7 +15,7 @@ Goals
 * Composability
 * Speed
 
-## Simple example:
+## Simple
 
 router.xml
 ```xml 
@@ -86,7 +87,7 @@ Patterns are surrounded by curly braces.
 - A regex pattern like: \d+ If no pattern is specified, ".+" is used.
 - Types can be 'int' or 'float' or 'string', or not specified (string). Int and float change the regex to match integers/floats respectively.
 
-## Optional patterns
+## Optional_Patterns
 
 Optional Patterns are surrounded by square braces.
 
@@ -96,7 +97,7 @@ cat[ext:\.\w+] matches things like "cat.jpg" "cat.html" and "cat".
 
 Capturing groups () cannot be used in either required nor optional patterns.
 
-## String Interpretation
+## String_Interpretation
 
 Strings are interpreted. `foo_{bar}` is equivalent to `foo_{$bar}` in PHP.
 
@@ -115,6 +116,25 @@ A series of functions that can be used to sanitize/format those variables.
     Regex: ([a-z]+_?)+
     Type: string
     Functions: \my_ns\to_url_slug()
+
+## Variables
+
+Variables are useful to test the results of function calls
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<router baseUrl="http://localhost">
+    <var name="foo">
+        <value>
+            <call function="\Wheat\barbar" />
+        </value>
+    </var>
+
+    <path pattern="{any}">
+        <return foo="{foo}" />
+    </path>
+</router>
+```
 
 
 ## Conditionals
