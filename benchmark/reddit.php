@@ -15,7 +15,7 @@ function prepare_title (string $title) {
 }
 
 function assertEquals ($expected, $test, $msg = '') {
-    if ($expected !== $test) {
+    if ($expected != $test) {
         echo "\n", $msg, "\n!!! Failed asserting that: ", var_export($expected, 1), " = ", var_export($test, true);
 
     }
@@ -124,13 +124,19 @@ $midCharsNum = $end - $start;
 $start = microtime(true);
 for ($i=0; $i<$n; $i++) {
     $result = $router->route([
-        'PATH_INFO' => '/r/subreddit/.rss',
+        'PATH_INFO' => '/r/subreddit.rss',
         'HTTP_HOST' => 'reddit.com',
         'REQUEST_SCHEME' => 'https'
     ]);
 }
 $end = microtime(true);
-assertEquals(['subreddit' => 'subreddit', 'controller' => 'ViewSubreddit', 'sort' => 'hot', 'format' => 'rss', 'code'=>'200'], $result);
+assertEquals([
+    'code' => '200',
+    'subreddit' => 'subreddit',
+    'controller' => 'ViewSubreddit',
+    'sort' => 'hot',
+    'format' => '.rss',
+    ], $result);
 $rss = $end - $start;
 
 
@@ -140,6 +146,7 @@ $count = $n * count($times);
 $times[] = $count;
 $times[] = $total;
 echo sprintf(<<<TXT
+
 n:          %d
 Homepage:   %f s
 lastReddit: %f s
